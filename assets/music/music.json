@@ -1,5 +1,13 @@
 {
-  "tracks": [],
-  "credit": { "text": "Musik: 8bit auf Spotify", "url": "https://open.spotify.com/search/8bit" },
-  "hinweis": "Lege deine MP3-Dateien in diesen Ordner und trage sie unten bei tracks ein, zum Beispiel: { \"file\": \"lied1.mp3\", \"title\": \"Name des Liedes\", \"artist\": \"Name des Künstlers\" }. Künstler und Titel nur eintragen, wenn sie sicher stimmen. Die Credit-Zeile oben kannst du anpassen."
+  "tracks": [
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" },
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" },
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" },
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" },
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" },
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" }
+
+
+  ],
+  "credit": { "text": "Musik: 8-Bit Big Band auf Spotify", "url": "https://open.spotify.com/intl-de/album/1bv3mwEX8WVjWswmXjcBZx?si=ztnfVUQZQOGSBIufj81v3A" }
 }
