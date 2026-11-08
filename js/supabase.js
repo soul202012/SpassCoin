@@ -6,4 +6,4 @@ export const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 // Kurzform für Datenbank-Funktionen: gibt immer { data, error } zurück
-export const rpc = (name, args) => sb.rpc(name, args || {});
+export const rpc = (name, args) => Promise.resolve(sb.rpc(name, args || {}));

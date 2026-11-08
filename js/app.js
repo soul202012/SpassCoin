@@ -66,12 +66,21 @@ export function navigate(tab, sub) {
 }
 state.navigate = navigate;
 
+function startError(e) {
+  console.error(e); root.innerHTML = '';
+  const c = el('div', 'card'); c.appendChild(el('h2', null, 'Start fehlgeschlagen'));
+  c.appendChild(el('p', null, 'Beim Starten ist ein Fehler aufgetreten: ' + ((e && e.message) || e)));
+  const b = el('button', 'full', 'Neu laden'); b.onclick = () => location.reload(); c.appendChild(b); root.appendChild(c);
+}
 async function afterLogin(cb) {
-  await refreshMe(); if (!state.me) return;
-  loadSettings();
-  await Promise.race([rpc('race_state').catch(() => {}), sleep(1500)]); // beendete Rennen auszahlen
-  await refreshMe();
-  readUrl(); render(); if (cb) cb();
+  try {
+    await refreshMe();
+    if (!state.me) { renderAuth(root, afterLogin); return; }
+    loadSettings();
+    try { await Promise.race([rpc('race_state'), sleep(1500)]); } catch (e) { /* beendete Rennen auszahlen, Fehler egal */ }
+    await refreshMe();
+    readUrl(); render(); if (cb) cb();
+  } catch (e) { startError(e); }
 }
 function readUrl() {
   const p = new URLSearchParams(location.search), t = p.get('tab');
@@ -92,6 +101,9 @@ if ('serviceWorker' in navigator) {
 }
 
 (async function boot() {
-  const s = await sb.auth.getSession();
-  if (s.data.session) await afterLogin(); else renderAuth(root, afterLogin);
+  try {
+    const s = await sb.auth.getSession();
+    if (s.data.session) await afterLogin(); else renderAuth(root, afterLogin);
+  } catch (e) { startError(e); }
 })();
+window.addEventListener('unhandledrejection', (e) => { if (root.querySelector('.msg') && /Lade/.test(root.textContent)) startError(e.reason); });
