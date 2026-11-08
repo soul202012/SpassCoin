@@ -1,0 +1,35 @@
+/* Karten (Blackjack, Higher or Lower, Video Poker) */
+.hand{display:flex;gap:8px;flex-wrap:wrap;min-height:96px;margin:6px 0}
+.pcard{width:62px;height:90px;background:#fff;color:#111;border-radius:9px;border:1px solid #ccc;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:22px;line-height:1.1;box-shadow:0 2px 6px rgba(0,0,0,.35);flex:none}
+.pcard.red{color:#c62828}.pcard span{font-size:26px}
+.pcard.back{background:repeating-linear-gradient(45deg,var(--accent) 0 6px,#111 6px 12px);border:2px solid #fff}
+.pcard.deal{animation:deal .45s ease-out}
+.pcard.flip{animation:flip .5s ease-out}
+.pcard.big{width:110px;height:158px;font-size:38px}.pcard.big span{font-size:46px}
+@keyframes deal{0%{transform:translate(60px,-80px) rotate(12deg) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+@keyframes flip{0%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+.total{font-weight:800;color:var(--muted);font-size:14px}
+/* Plinko */
+.plinko{width:100%;display:block;border-radius:14px;background:radial-gradient(circle at 50% 0,#1d1a3a,#0a0a14);touch-action:manipulation}
+.risks button{flex:1}
+/* Rubbellos */
+.scratch{display:grid;gap:8px;margin:12px 0}
+.sc-cell{position:relative;aspect-ratio:1;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;user-select:none}
+.sc-cell canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.sc-cell.win{outline:3px solid var(--accent);animation:pop .5s}
+.sc-cell.dim{opacity:.45}
+.tierlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;font-size:13px}
+.tierlist div{background:var(--soft);border-radius:10px;padding:6px 8px;text-align:center}
+/* Higher or Lower */
+.ladder{display:flex;flex-direction:column-reverse;gap:4px;margin:8px 0}
+.ladder div{display:flex;justify-content:space-between;padding:4px 10px;border-radius:8px;background:var(--soft);font-size:14px}
+.ladder div.cur{background:var(--accent);color:var(--accent-t);font-weight:800}
+.ladder div.done{opacity:.55}
+.hilo-main{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+/* Video Poker */
+.vp-hand{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.vp-slot{text-align:center}
+.vp-slot .pcard{width:100%;height:auto;aspect-ratio:62/90;cursor:pointer;font-size:clamp(16px,5vw,26px)}
+.vp-slot .held{font-size:11px;font-weight:800;color:var(--accent);min-height:16px}
+.vp-slot .pcard.sel{outline:3px solid var(--accent);transform:translateY(-6px)}
+.vp-pay{width:100%;font-size:14px}.vp-pay tr.hit{background:var(--accent);color:var(--accent-t);font-weight:800}

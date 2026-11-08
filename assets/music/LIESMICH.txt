@@ -1,0 +1,17 @@
+Hintergrundmusik
+================
+1. Lege deine MP3-Dateien in diesen Ordner (assets/music/), jede Datei einzeln austauschbar.
+2. Trage sie in music.json ein (Datei, Titel, Künstler). Künstler und Titel nur eintragen, wenn sie sicher stimmen.
+3. In den Einstellungen der App kann jede Person zwischen «Automatisch wechseln» und «Ein Lied wiederholen» wählen,
+   ein Lied aussuchen und die Lautstärke einstellen. Die Musik startet nach dem ersten Tippen (Browser-Regel).
+
+Beispiel music.json:
+{
+  "tracks": [
+    { "file": "lied1.mp3", "title": "Mein erstes Lied", "artist": "Name" },
+    { "file": "lied2.mp3", "title": "Mein zweites Lied" }
+  ],
+  "credit": { "text": "Musik: 8bit auf Spotify", "url": "https://open.spotify.com/..." }
+}
+
+Wichtig: Verwende nur Musik, für die du die Nutzungsrechte hast.
