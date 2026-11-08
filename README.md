@@ -5,7 +5,7 @@ Alle Coins sind rein digital und nur zum Spass. Es gibt kein echtes Geld.
 
 Die Seite ist eine reine statische Seite (HTML, CSS, JavaScript-Module, kein Build nötig). Backend ist Supabase.
 GitHub → Netlify veröffentlicht automatisch.
-
+.
 ## Projektstruktur
 
 ```
