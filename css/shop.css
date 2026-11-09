@@ -1,0 +1,8 @@
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.shopitem{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.shopitem .prev{width:72px;height:72px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden}
+.shopitem .nm{font-weight:700;font-size:14px}
+.shopitem .price{font-size:13px;color:var(--muted)}
+.shopitem.rare{border-color:#3b82f6}.shopitem.epic{border-color:#a855f7}.shopitem.legendary{border-color:#f59e0b;box-shadow:0 0 14px #f59e0b44}
+.rar{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.rar.rare{color:#3b82f6}.rar.epic{color:#a855f7}.rar.legendary{color:#f59e0b}
