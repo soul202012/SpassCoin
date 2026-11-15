@@ -1,5 +1,5 @@
 import { rpc } from '../supabase.js';
-import { state, go } from '../state.js';
+import { state, go, invalidateConfig } from '../state.js';
 import { el, toast, errText, r2, sgn, onLeave } from '../ui.js';
 import { nf, cbf, selectf, listEditor, sec, liveInfo, sum } from './forms.js';
 
@@ -46,7 +46,7 @@ export async function renderGamesAdmin(box, a) {
     for (const s of savers) { try { const e = await s.run(); if (e) errs.push(s.name + ': ' + e); } catch (e) { errs.push(s.name + ': ' + errText(e)); } }
     btn.disabled = false;
     if (errs.length) { errs.forEach((m) => errBox.appendChild(el('p', 'err', m))); return; }
-    state.dirty = false; flag.textContent = ''; toast('Gespeichert'); go('admin', 'games');
+    state.dirty = false; flag.textContent = ''; invalidateConfig(); toast('Gespeichert'); go('admin', 'games');
   };
   box.appendChild(bar);
 }

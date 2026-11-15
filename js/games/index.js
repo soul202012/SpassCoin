@@ -24,7 +24,8 @@ export function racePhase(st, now) {
 }
 
 export async function renderGames(box) {
-  const [, cfg] = await Promise.all([refreshMe(), getConfig()]);
+  // Immer frisch laden: sonst sieht man gesperrte/entsperrte Spiele erst nach bis zu 60 s
+  const [, cfg] = await Promise.all([refreshMe(), getConfig(true)]);
   if (state.me.is_admin && !state.me.is_test) {
     const a = el('div', 'card'); a.appendChild(el('h2', null, 'Spiele'));
     a.appendChild(el('p', null, 'Admin-Konten können nicht mitspielen. Nimm dafür das Test-Konto.')); box.appendChild(a); return;
