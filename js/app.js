@@ -27,6 +27,11 @@ const ICONS = {
   missions: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
   rank: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/>',
   shop: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  account: '<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M7 15h4"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+  admin: '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>',
+  out: '<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H3"/>',
 };
 const svgIcon = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[k] + '</svg>';
 
@@ -55,22 +60,18 @@ function buildShell() {
   inner.appendChild(brand); inner.appendChild(desk); inner.appendChild(right); bar.appendChild(inner);
 
   const panel = el('div', 'menu-panel'), grid = el('div', 'grid'), pItems = {};
-  PRIMARY.concat(moreItems()).forEach(([k, t]) => { const b = el('button', null, t); b.onclick = () => { closeMenus(); go(k); }; grid.appendChild(b); pItems[k] = b; });
-  const po = el('button', 'out', 'Abmelden'); po.onclick = () => sb.auth.signOut(); grid.appendChild(po);
-  panel.appendChild(grid);
-  mb.onclick = () => { const o = panel.classList.toggle('open'); mb.setAttribute('aria-expanded', o); mb.textContent = o ? 'Schliessen' : 'Menü'; };
-  function closeMenus() { dd.classList.remove('open'); panel.classList.remove('open'); mb.textContent = 'Menü'; mb.setAttribute('aria-expanded', 'false'); }
+  const item = (k, t, cls) => { const b = el('button', cls); b.innerHTML = svgIcon(k); b.appendChild(el('span', null, t)); return b; };
+  PRIMARY.concat(moreItems()).forEach(([k, t]) => { const b = item(k, t); b.onclick = () => { closeMenus(); go(k); }; grid.appendChild(b); pItems[k] = b; });
+  const po = item('out', 'Abmelden', 'out'); po.onclick = () => sb.auth.signOut(); grid.appendChild(po);
+  panel.appendChild(grid); panel.onclick = (e) => e.stopPropagation();
+  mb.onclick = (e) => { e.stopPropagation(); const o = panel.classList.toggle('open'); mb.setAttribute('aria-expanded', o); };
+  function closeMenus() { dd.classList.remove('open'); panel.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); }
 
-  const tabbar = el('nav', 'tabbar'), tItems = {};
-  PRIMARY.forEach(([k, t]) => {
-    const b = el('button'); b.innerHTML = svgIcon(k); b.appendChild(el('span', null, t));
-    b.onclick = () => { closeMenus(); go(k); }; tabbar.appendChild(b); tItems[k] = b;
-  });
-  const page = el('main', 'page'); root.appendChild(bar); root.appendChild(panel); root.appendChild(page); bar.appendChild(tabbar);
-  ui = { bar, page, links, more, ddItems, pItems, tItems, closeMenus };
+  const page = el('main', 'page'); root.appendChild(bar); root.appendChild(panel); root.appendChild(page);
+  ui = { bar, page, links, more, ddItems, pItems, closeMenus };
   setBal();
 }
-document.addEventListener('click', () => { const d = document.querySelector('.dd.open'); if (d) d.classList.remove('open'); });
+document.addEventListener('click', () => { if (ui) ui.closeMenus(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && ui) ui.closeMenus(); });
 
 function markActive() {
@@ -78,9 +79,7 @@ function markActive() {
   const inMore = moreItems().some(([k]) => k === state.tab);
   ui.more.classList.toggle('on', inMore);
   Object.entries(ui.ddItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));
-  Object.entries(ui.pItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));
-  Object.entries(ui.tItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));
-}
+  Object.entries(ui.pItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));}
 
 export async function render() {
   if (rendering) { pending = true; return; }
