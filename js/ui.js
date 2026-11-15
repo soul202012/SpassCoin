@@ -109,33 +109,59 @@ export function resultLine(payout, stake) {
 }
 export const isBigWin = (payout, stake) => payout >= 20 && payout >= stake * 10;
 
-// Konfetti auf einer Leinwand über der Seite; emojis = optionale Liste, die zwischen die Schnipsel gemischt wird
+// Konfetti-Fontäne auf einer Leinwand über der Seite.
+// Flüssig, weil: Bewegung nach echter Zeit (nicht pro Bild), Emojis nur einmal vorgezeichnet (drawImage statt fillText),
+// eine einzige Leinwand für alle Ausbrüche und keine Schatten/Filter pro Teilchen.
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sprites = new Map();
+function sprite(e) {
+  if (sprites.has(e)) return sprites.get(e);
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d'); g.font = '48px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(e, 32, 36); sprites.set(e, c); return c;
+}
+let fx = null; // { cv, g, ps, W, H, last }
 export function confetti(n, emojis) {
   if (reduceMotion()) return;
-  const cv = el('canvas', 'fx-canvas'), dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, Hh = innerHeight;
-  cv.width = W * dpr; cv.height = Hh * dpr; document.body.appendChild(cv);
-  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  if (!fx) {
+    const cv = el('canvas', 'fx-canvas'), dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; document.body.appendChild(cv);
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fx = { cv, g, ps: [], W: innerWidth, H: innerHeight, last: 0, d: dpr };
+    requestAnimationFrame(tick);
+  }
+  const a = document.querySelector('.gamewrap .res, .gamewrap'), r = a ? a.getBoundingClientRect() : null;
+  const ox = r ? r.left + r.width / 2 : fx.W / 2, oy = r ? Math.min(fx.H * 0.8, Math.max(80, r.top)) : fx.H * 0.6;
   const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#d4af37';
-  const cols = [acc, '#ffd54a', '#ff4d8d', '#4dd0ff', '#7cff6b', '#b388ff', '#ffffff'];
-  const ps = Array.from({ length: n }, () => ({
-    x: W / 2 + (Math.random() - 0.5) * W * 0.3, y: Hh * 0.42, vx: (Math.random() - 0.5) * 14, vy: -6 - Math.random() * 12,
-    r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4, s: 5 + Math.random() * 7, c: cols[(Math.random() * cols.length) | 0],
-    e: emojis && Math.random() < 0.35 ? emojis[(Math.random() * emojis.length) | 0] : null,
-  }));
-  const t0 = performance.now();
-  const step = (now) => {
-    g.clearRect(0, 0, W, Hh); let alive = 0;
-    ps.forEach((p) => {
-      p.vy += 0.32; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
-      if (p.y < Hh + 40) alive++;
-      g.save(); g.translate(p.x, p.y); g.rotate(p.r);
-      if (p.e) { g.font = (p.s * 3) + 'px serif'; g.fillText(p.e, -p.s, p.s); } else { g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); }
-      g.restore();
-    });
-    if (alive && now - t0 < 4000) requestAnimationFrame(step); else cv.remove();
-  };
-  requestAnimationFrame(step);
+  const cols = [acc, acc, '#ffd54a', '#ff4d8d', '#4dd0ff', '#7cff6b', '#b388ff', '#ffffff'];
+  for (let i = 0; i < n; i++) {
+    const ang = -Math.PI / 2 + (Math.random() - 0.5) * 1.5, sp = 650 + Math.random() * 850;
+    const e = emojis && Math.random() < 0.3 ? emojis[(Math.random() * emojis.length) | 0] : null;
+    fx.ps.push({ x: ox + (Math.random() - 0.5) * 40, y: oy, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+      r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 12, ph: Math.random() * 6.28, vp: 6 + Math.random() * 8,
+      s: e ? 22 + Math.random() * 12 : 7 + Math.random() * 6, c: cols[(Math.random() * cols.length) | 0],
+      img: e ? sprite(e) : null, t: 0, life: 2.2 + Math.random() * 1.2 });
+  }
+}
+function tick(now) {
+  const f = fx; if (!f) return;
+  const dt = f.last ? Math.min(0.034, (now - f.last) / 1000) : 0.016; f.last = now;
+  const g = f.g, d = f.d; g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, f.W, f.H);
+  const drag = Math.pow(0.35, dt);
+  f.ps = f.ps.filter((p) => {
+    p.t += dt; if (p.t > p.life || p.y > f.H + 60) return false;
+    p.vy += 1500 * dt; p.vx *= drag;
+    if (!p.img && p.vy > 260) p.vy = 260; // Papier schwebt langsam, Münzen fallen schwer
+    p.x += p.vx * dt; p.y += p.vy * dt; p.r += p.vr * dt; p.ph += p.vp * dt;
+    g.globalAlpha = Math.min(1, (p.life - p.t) / 0.5);
+    const cs = Math.cos(p.r) * d, sn = Math.sin(p.r) * d;
+    g.setTransform(cs, sn, -sn, cs, p.x * d, p.y * d);
+    if (p.img) g.drawImage(p.img, -p.s / 2, -p.s / 2, p.s, p.s);
+    else { const w = p.s * Math.cos(p.ph); g.fillStyle = p.c; g.fillRect(-w / 2, -p.s / 4, w, p.s / 2); } // Breite schwankt = Schnipsel dreht sich in 3D
+    return true;
+  });
+  g.globalAlpha = 1;
+  if (f.ps.length) requestAnimationFrame(tick); else { f.cv.remove(); fx = null; }
 }
 // "+X" schwebt über dem Ergebnis nach oben
 function floatAmount(text) {
@@ -147,20 +173,34 @@ function floatAmount(text) {
 // Bei Verlust: Spielfeld kurz schütteln
 export function loseFx() {
   const w = document.querySelector('.gamewrap'); if (!w || reduceMotion()) return;
-  w.classList.remove('fx-shake-box'); void w.offsetWidth; w.classList.add('fx-shake-box');
+  w.animate([{ transform: 'none' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(7px)' }, { transform: 'translateX(-5px)' }, { transform: 'translateX(3px)' }, { transform: 'none' }],
+    { duration: 420, easing: 'cubic-bezier(.36,.07,.19,.97)' });
   if (navigator.vibrate) navigator.vibrate(60);
+}
+// Leuchtring um das Spielfeld: eigenes Element, nur Deckkraft und Grösse werden animiert (läuft auf der Grafikkarte)
+function glowRing(strong) {
+  const w = document.querySelector('.gamewrap'); if (!w || reduceMotion()) return;
+  const g = el('div', 'fx-ring' + (strong ? ' strong' : '')); w.appendChild(g);
+  g.animate([{ opacity: 0, transform: 'scale(.98)' }, { opacity: 1, transform: 'scale(1)', offset: 0.25 }, { opacity: 0, transform: 'scale(1.015)' }],
+    { duration: strong ? 1600 : 1100, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = () => g.remove();
 }
 
 let bwTimer = 0;
 // Jeder Gewinn feiert: kleiner Gewinn = Konfetti und "+X", ab 3× mehr Konfetti mit Münzen, ab 10× die grosse Einblendung
 export function celebrate(payout, stake) {
   if (payout <= stake) return;
-  const ratio = payout / Math.max(1, stake), w = document.querySelector('.gamewrap');
+  const ratio = payout / Math.max(1, stake), big = isBigWin(payout, stake);
   floatAmount('+' + payout);
-  if (w) { w.classList.remove('fx-win-box'); void w.offsetWidth; w.classList.add('fx-win-box'); }
-  document.querySelectorAll('.gamewrap .pcard').forEach((c) => { c.classList.remove('win-pulse'); void c.offsetWidth; c.classList.add('win-pulse'); });
+  glowRing(ratio >= 3);
+  if (!reduceMotion()) document.querySelectorAll('.gamewrap .pcard').forEach((c, i) => {
+    c.classList.add('win-glow');
+    c.animate([{ transform: 'none' }, { transform: 'translateY(-12px) scale(1.07)', offset: 0.35 }, { transform: 'none' }],
+      { duration: 900, delay: i * 70, easing: 'cubic-bezier(.3,1.5,.5,1)' }).onfinish = () => c.classList.remove('win-glow');
+  });
   if (navigator.vibrate) navigator.vibrate(ratio >= 3 ? [40, 50, 80] : 35);
-  confetti(isBigWin(payout, stake) ? 220 : ratio >= 3 ? 110 : 45, ratio >= 3 ? ['🪙', '✨', '🎉', '💰'] : null);
+  // Fontäne: grosse Gewinne in zwei Stössen
+  confetti(big ? 130 : ratio >= 3 ? 90 : 45, ratio >= 3 ? ['🪙', '✨', '🎉', '💰'] : null);
+  if (big) setTimeout(() => confetti(110, ['🪙', '💰', '✨']), 380);
   if (!isBigWin(payout, stake)) return;
   const old = document.querySelector('.bigwin'); if (old) old.remove();
   clearTimeout(bwTimer);
