@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, sleep, onLeave, stakeBox, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, sleep, onLeave, stakeBox, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let slotStake = 1;
@@ -51,13 +51,15 @@ export function init(box, ctx) {
     if (r.error) { setBusy(false); toast(errText(r.error), true); return null; }
     const d = r.data, tk = setInterval(sfx.tick, 110), from = strips.map((s) => (s.firstChild ? s.firstChild.textContent : syms[0].symbol));
     const f = fast ? 0.45 : 1;
+    slot.classList.remove('win', 'big'); slot.classList.add('spinning');
     await Promise.all(strips.map((s, i) => animate(s, from[i], syms[d.reels[i]].symbol, (1.5 + i * 0.6) * f)));
-    clearInterval(tk);
+    clearInterval(tk); slot.classList.remove('spinning');
     if (!alive) return null;
+    if (d.win) slot.classList.add('win', ...(d.payout >= v * 10 ? ['big'] : []));
     state.me.balance = Number(d.balance); setBal(); setBusy(false);
     const rl = resultLine(d.payout, v);
     res.textContent = d.win ? 'Treffer: ' + rl.t : rl.t; res.style.color = rl.c;
-    if (d.win) { d.payout >= v * 30 ? sfx.big() : sfx.win(); celebrate(d.payout, v); } else sfx.lose();
+    if (d.win) { d.payout >= v * 30 ? sfx.big() : sfx.win(); celebrate(d.payout, v); } else (sfx.lose(), loseFx());
     return d;
   }
   go.onclick = async () => {

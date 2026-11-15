@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, onLeave, stakeBox, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, onLeave, stakeBox, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let stake = 1;
@@ -68,7 +68,7 @@ export function init(box, ctx) {
       if (d.matches > 0) cellEls.forEach((ce) => ce.classList.add(ce.dataset.sym === d.symbol ? 'win' : 'dim'));
       const rl = resultLine(d.payout, v);
       res.textContent = d.matches > 0 && d.payout > 0 ? d.matches + ' gleiche: ' + rl.t : rl.t; res.style.color = rl.c;
-      if (d.net > 0) { d.mult >= 20 ? sfx.big() : sfx.win(); celebrate(d.payout, v); } else if (d.payout > 0) sfx.coin(); else sfx.lose();
+      if (d.net > 0) { d.mult >= 20 ? sfx.big() : sfx.win(); celebrate(d.payout, v); } else if (d.payout > 0) sfx.coin(); else (sfx.lose(), loseFx());
     };
     requestAnimationFrame(() => {
       cellEls.forEach((ce) => { reveals.push(makeScratch(ce, () => { left--; if (left === 0) finish(); })); });

@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, onLeave, stakeBox, cardEl, coinsText, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, onLeave, stakeBox, cardEl, coinsText, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let stake = 1;
@@ -56,7 +56,7 @@ export async function init(box, ctx) {
     const d = r.data; g = d; draw(true);
     if (d.result === 'win') { sfx.coin(); res.textContent = 'Richtig! '; res.style.color = 'var(--green)'; }
     else if (d.result === 'tie') { res.textContent = 'Gleichstand – weiter gehts'; res.style.color = ''; }
-    else if (d.result === 'lose') { sfx.lose(); res.textContent = 'Falsch! Einsatz verloren (−' + coinsText(d.stake) + ')'; res.style.color = 'var(--red)'; }
+    else if (d.result === 'lose') { (sfx.lose(), loseFx()); res.textContent = 'Falsch! Einsatz verloren (−' + coinsText(d.stake) + ')'; res.style.color = 'var(--red)'; }
     else if (d.result === 'cashout') { state.me.balance = Number(d.balance); setBal(); sfx.big(); const rl = resultLine(d.payout, d.stake); res.textContent = 'Oberste Stufe: ' + rl.t; res.style.color = rl.c; celebrate(d.payout, d.stake); }
     buttons();
   }
@@ -66,7 +66,7 @@ export async function init(box, ctx) {
     if (!alive) return;
     if (r.error) { toast(errText(r.error), true); return buttons(); }
     g = r.data; state.me.balance = Number(g.balance); setBal(); draw(false); sfx.win();
-    const rl = resultLine(g.payout, g.stake); res.textContent = 'Ausgestiegen: ' + rl.t; res.style.color = rl.c;
+    const rl = resultLine(g.payout, g.stake); res.textContent = 'Ausgestiegen: ' + rl.t; res.style.color = rl.c; celebrate(g.payout, g.stake);
     if (g.net > 0) celebrate(g.payout, g.stake); buttons();
   }
   const cur = await rpc('hilo_current');

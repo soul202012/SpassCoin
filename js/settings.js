@@ -93,5 +93,21 @@ export async function renderSettings(box) {
   const p = el('p');
   if (credit.url) { const a = el('a', null, credit.text); a.href = credit.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; p.appendChild(a); } else p.textContent = credit.text;
   cr.appendChild(p);
+  // Grafik-Quellen: Lizenz und Urheber, wie von CC BY 4.0 und MIT verlangt
+  const link = (text, url) => { const a = el('a', null, text); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; };
+  const lic = el('div', 'credits');
+  [
+    ['Avatare «Notionists» von Zoish', 'CC0 1.0', 'https://www.dicebear.com/styles/notionists/'],
+    ['Avatare «Fun Emoji» von Davis Uche', 'CC BY 4.0', 'https://www.dicebear.com/styles/fun-emoji/'],
+    ['Avatare «Voxel Bot» und «Initials» von DiceBear', 'CC0 1.0', 'https://www.dicebear.com/styles/voxel-bot/'],
+    ['Avatar-Erzeugung mit DiceBear', 'MIT', 'https://www.dicebear.com/licenses/'],
+    ['Farbverläufe aus uiGradients von Indrashish Ghosh', 'MIT', 'https://github.com/ghosh/uiGradients'],
+    ['Muster aus Hero Patterns von Steve Schoger', 'CC BY 4.0', 'https://heropatterns.com/'],
+    ['Nordlicht-Farben aus Auroral von Lunar Logic', 'MIT', 'https://github.com/lunarlogic/auroral'],
+  ].forEach(([t, l, u]) => { const r = el('p', 'hint'); r.appendChild(link(t, u)); r.appendChild(document.createTextNode(' · ' + l)); lic.appendChild(r); });
+  const cc = el('p', 'hint'); cc.appendChild(document.createTextNode('Lizenztexte: ')); cc.appendChild(link('CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0/'));
+  cc.appendChild(document.createTextNode(' · ')); cc.appendChild(link('CC0 1.0', 'https://creativecommons.org/publicdomain/zero/1.0/'));
+  cc.appendChild(document.createTextNode(' · ')); cc.appendChild(link('MIT', 'https://opensource.org/license/mit')); lic.appendChild(cc);
+  cr.appendChild(el('div', 'lbl', 'Grafiken')); cr.appendChild(lic);
   box.appendChild(cr);
 }

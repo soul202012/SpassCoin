@@ -28,13 +28,23 @@ export function styleName(node, p) {
     if (String(d.css).indexOf('gradient') >= 0) { node.classList.add('gtext'); if (d.animated) node.classList.add('anim'); node.style.backgroundImage = d.css; }
     else node.style.color = d.css;
   }
-  const fx = cat(p.rank_effect).class; if (fx) node.classList.add(fx);
+  applyFx(node, cat(p.rank_effect));
+  return node;
+}
+// Effekt anwenden; bei "split" wird jeder Buchstabe ein eigenes <span>, damit er einzeln hüpfen oder drehen kann
+export function applyFx(node, d) {
+  if (!d || !d.class) return node;
+  node.classList.add(d.class);
+  if (d.split) {
+    const t = node.textContent; node.textContent = '';
+    [...t].forEach((ch, i) => { const s = el('span', 'ch', ch === ' ' ? ' ' : ch); s.style.setProperty('--i', i); node.appendChild(s); });
+  }
   return node;
 }
 export function nameEl(p, text) { return styleName(el('span', 'pname', text || p.username), p); }
 export const colorCss = (p) => cat(p.color).css || '#d4af37';
 export function applyBackground(node, p) {
   const d = cat(p.background);
-  if (d.css && d.css !== 'var(--card)') { node.style.background = d.css; if (d.size) node.style.backgroundSize = d.size; }
+  if (d.css && d.css !== 'var(--card)') { node.style.background = d.css; if (d.size) node.style.backgroundSize = d.size; if (d.class) node.classList.add(d.class); }
   else node.style.background = 'var(--card)';
 }

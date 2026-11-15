@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, sleep, onLeave, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, sleep, onLeave, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let wheelRot = 0;
@@ -13,16 +13,24 @@ export function init(box, ctx) {
   onLeave(() => { alive = false; auto = false; });
   const total = fields.reduce((s, f) => s + Number(f.weight), 0);
   const c = el('div', 'card'); c.appendChild(el('h2', null, 'Glücksrad'));
-  const wb = el('div', 'wheelbox'); wb.appendChild(el('div', 'ptr', '▼'));
-  let svg = '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g id="wg" style="transform:rotate(' + wheelRot + 'deg)">', a0 = 0; const mids = [];
+  const wb = el('div', 'wheelbox'); wb.appendChild(el('div', 'ptr'));
+  // Casino-Look: goldener Rand mit Lauflichtern, satte Felder (schwarz = Niete, rot = Verlust/Gewinn, grün = Einsatz zurück, gold = grosser Gewinn)
+  let svg = '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>' +
+    '<linearGradient id="wgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".45" stop-color="#d4a017"/><stop offset="1" stop-color="#7a5200"/></linearGradient>' +
+    '<radialGradient id="whub"><stop offset="0" stop-color="#fff8d6"/><stop offset=".6" stop-color="#e0b33a"/><stop offset="1" stop-color="#8a6000"/></radialGradient>' +
+    '<radialGradient id="wshade"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient></defs>' +
+    '<circle cx="100" cy="100" r="99" fill="url(#wgold)"/><circle cx="100" cy="100" r="92" fill="#120d05"/>' +
+    '<g id="wg" style="transform:rotate(' + wheelRot + 'deg)">', a0 = 0; const mids = [];
   fields.forEach((f) => {
-    const ang = Number(f.weight) / total * 360, a1 = a0 + ang, p0 = polar(a0, 96), p1 = polar(a1, 96), lab = polar(a0 + ang / 2, 66);
-    const net = f.payout - stake, col = f.payout === 0 ? '#8a8372' : net < 0 ? '#c2703a' : net === 0 ? '#5b7fa6' : net >= 2 ? '#e0a100' : '#3fa66b';
-    svg += '<path d="M100,100 L' + p0[0].toFixed(2) + ',' + p0[1].toFixed(2) + ' A96,96 0 ' + (ang > 180 ? 1 : 0) + ' 1 ' + p1[0].toFixed(2) + ',' + p1[1].toFixed(2) + ' Z" fill="' + col + '" stroke="#fff" stroke-width="1.5"/>';
-    svg += '<text x="' + lab[0].toFixed(2) + '" y="' + lab[1].toFixed(2) + '" fill="#fff" font-size="' + (ang < 18 ? 8 : 11) + '" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate(' + (a0 + ang / 2).toFixed(2) + ' ' + lab[0].toFixed(2) + ' ' + lab[1].toFixed(2) + ')">' + label(f.payout, stake) + '</text>';
+    const ang = Number(f.weight) / total * 360, a1 = a0 + ang, p0 = polar(a0, 89), p1 = polar(a1, 89), lab = polar(a0 + ang / 2, 62);
+    const net = f.payout - stake, col = f.payout === 0 ? '#16161a' : net < 0 ? '#7d0f1f' : net === 0 ? '#0e6b3c' : net >= 2 ? '#d4a017' : '#c8102e';
+    svg += '<path d="M100,100 L' + p0[0].toFixed(2) + ',' + p0[1].toFixed(2) + ' A89,89 0 ' + (ang > 180 ? 1 : 0) + ' 1 ' + p1[0].toFixed(2) + ',' + p1[1].toFixed(2) + ' Z" fill="' + col + '" stroke="url(#wgold)" stroke-width="1.6"/>';
+    svg += '<text x="' + lab[0].toFixed(2) + '" y="' + lab[1].toFixed(2) + '" fill="' + (net >= 2 ? '#2a1a00' : '#fff') + '" font-size="' + (ang < 18 ? 8 : 11) + '" font-weight="900" text-anchor="middle" dominant-baseline="middle" transform="rotate(' + (a0 + ang / 2).toFixed(2) + ' ' + lab[0].toFixed(2) + ' ' + lab[1].toFixed(2) + ')">' + label(f.payout, stake) + '</text>';
     mids.push([a0, a1]); a0 = a1;
   });
-  svg += '</g><circle cx="100" cy="100" r="9" fill="#fff" stroke="#2b2414" stroke-width="2"/></svg>';
+  svg += '<circle cx="100" cy="100" r="89" fill="url(#wshade)"/></g>';
+  for (let i = 0; i < 24; i++) { const b = polar(i * 15, 95.5); svg += '<circle class="bulb" style="animation-delay:' + (i % 2 ? 0.5 : 0) + 's" cx="' + b[0].toFixed(2) + '" cy="' + b[1].toFixed(2) + '" r="2.2"/>'; }
+  svg += '<circle cx="100" cy="100" r="15" fill="url(#whub)" stroke="#7a5200" stroke-width="1.5"/><text x="100" y="101" font-size="14" text-anchor="middle" dominant-baseline="middle" fill="#7a5200">★</text></svg>';
   wb.insertAdjacentHTML('beforeend', svg); c.appendChild(wb);
   const res = el('div', 'res'); c.appendChild(res);
   const btns = el('div', 'btns');
@@ -40,12 +48,14 @@ export function init(box, ctx) {
     wheelRot = wheelRot + 360 * (fast ? 3 : 5) + need;
     const wg = document.getElementById('wg');
     wg.style.transition = 'transform ' + dur + 's cubic-bezier(.12,.7,.1,1)'; wg.style.transform = 'rotate(' + wheelRot + 'deg)';
+    wb.classList.remove('win'); wb.classList.add('spinning');
     sfx.spin(); await sleep(dur * 1000 + 150);
     if (!alive) return null;
+    wb.classList.remove('spinning'); if (d.net > 0) wb.classList.add('win');
     state.me.balance = Number(d.balance); setBal(); spinning = false;
     const rl = resultLine(d.payout, d.stake);
     res.textContent = d.payout === 0 ? 'Niete, ' + rl.t : rl.t + (d.payout === d.stake ? ' (Einsatz zurück)' : ''); res.style.color = rl.c;
-    if (d.net > 0) { sfx.win(); celebrate(d.payout, d.stake); } else if (d.payout === 0) sfx.lose(); else sfx.coin();
+    if (d.net > 0) { sfx.win(); celebrate(d.payout, d.stake); } else if (d.payout === 0) (sfx.lose(), loseFx()); else sfx.coin();
     ui(); return d;
   }
   go.onclick = () => spinOnce(false);

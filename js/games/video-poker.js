@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, onLeave, stakeBox, cardEl, sleep, coinsText, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, onLeave, stakeBox, cardEl, sleep, coinsText, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let stake = 1;
@@ -58,7 +58,7 @@ export async function init(box, ctx) {
     const was = game; game = null; hold = [false, false, false, false, false];
     drawHand(d.hand, changed); sfx.flip(); await sleep(350); if (!alive) return;
     state.me.balance = Number(d.balance); setBal(); table(d.kind); game = null; was.done = true;
-    if (d.kind === 'none') { res.textContent = 'Keine Gewinnhand. −' + coinsText(stakeNow); res.style.color = 'var(--red)'; sfx.lose(); }
+    if (d.kind === 'none') { res.textContent = 'Keine Gewinnhand. −' + coinsText(stakeNow); res.style.color = 'var(--red)'; (sfx.lose(), loseFx()); }
     else { const rl = resultLine(d.payout, stakeNow); res.textContent = NAMES[d.kind] + ': ' + rl.t; res.style.color = rl.c; d.mult >= 25 ? sfx.big() : sfx.win(); celebrate(d.payout, stakeNow); }
     buttons();
   }

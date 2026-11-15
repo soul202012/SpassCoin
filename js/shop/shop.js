@@ -2,7 +2,7 @@ import { rpc } from '../supabase.js';
 import { state, go } from '../state.js';
 import { el, toast, errText, confirmBox } from '../ui.js';
 import { sfx } from '../audio.js';
-import { loadCatalog, avatarEl } from '../profile/cosmetics.js';
+import { loadCatalog, avatarEl, applyFx } from '../profile/cosmetics.js';
 
 const LABEL = { avatar: 'Avatare', frame: 'Rahmen', color: 'Profilfarben', background: 'Hintergründe', name_color: 'Namensfarben', rank_effect: 'Effekte' };
 const PARAM = { avatar: 'p_avatar', frame: 'p_frame', color: 'p_color', background: 'p_background', name_color: 'p_name_color', rank_effect: 'p_rank_effect' };
@@ -13,11 +13,11 @@ function preview(it, equipped) {
   if (it.category === 'avatar') { const i = el('img'); i.src = d.file; i.loading = 'lazy'; i.style.cssText = 'width:60px;height:60px;border-radius:50%'; p.appendChild(i); }
   else if (it.category === 'frame') p.appendChild(avatarEl({ avatar: equipped.avatar, frame: it.id }, 56));
   else if (it.category === 'color') { p.style.background = d.css; if (d.animated) { p.classList.add('anim'); p.style.backgroundSize = '200% 100%'; } }
-  else if (it.category === 'background') { p.style.background = d.css || 'var(--card)'; if (d.size) p.style.backgroundSize = d.size; p.style.border = '1px solid var(--line)'; }
+  else if (it.category === 'background') { p.style.background = d.css || 'var(--card)'; if (d.size) p.style.backgroundSize = d.size; if (d.class) p.classList.add(d.class); p.style.border = '1px solid var(--line)'; }
   else if (it.category === 'name_color') {
     p.textContent = 'Name'; p.style.fontWeight = '800';
     if (String(d.css).indexOf('gradient') >= 0) { p.classList.add('gtext'); if (d.animated) p.classList.add('anim'); p.style.backgroundImage = d.css; } else p.style.color = d.css;
-  } else { const s = el('span', d.class || '', 'Name'); s.style.fontWeight = '800'; p.appendChild(s); }
+  } else { const s = el('span', null, 'Name'); s.style.fontWeight = '800'; p.appendChild(applyFx(s, d)); }
   return p;
 }
 

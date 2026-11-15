@@ -8,6 +8,14 @@
 .tile .live{font-size:12px;font-weight:600;color:var(--c);margin-top:6px}
 :root[data-theme="light"] .tile .live{color:color-mix(in srgb,var(--c) 60%,#000)}
 .tile.off{cursor:default;opacity:.5}.tile.off:hover,.tile.off:active{transform:none;border-color:var(--edge)}
+/* Gewinn- und Verlust-Effekte (ui.js: celebrate, loseFx) */
+.fx-canvas{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:65}
+.fx-float{position:absolute;z-index:66;transform:translate(-50%,0);pointer-events:none;font-size:30px;font-weight:800;letter-spacing:-.02em;color:var(--accent);text-shadow:0 2px 12px color-mix(in srgb,var(--accent) 60%,transparent);animation:floatup 1.4s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes floatup{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}15%{opacity:1;transform:translate(-50%,-6px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-90px) scale(1)}}
+.fx-win-box .card{animation:winglow 1.2s ease-out}
+@keyframes winglow{0%{box-shadow:var(--shadow),0 0 0 0 color-mix(in srgb,var(--accent) 70%,transparent)}35%{box-shadow:var(--shadow),0 0 0 6px color-mix(in srgb,var(--accent) 45%,transparent),0 0 60px color-mix(in srgb,var(--accent) 45%,transparent)}100%{box-shadow:var(--shadow),0 0 0 0 transparent}}
+.fx-shake-box .card{animation:shakebox .45s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shakebox{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
 .chests{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;margin:12px 0}
 .chest{aspect-ratio:1;padding:0;border-radius:var(--r);background:var(--fill);color:var(--muted);border:1px solid transparent;display:flex;align-items:center;justify-content:center;transition:transform .24s ease,background .3s,border-color .3s}
 .chest:hover:not(:disabled){border-color:var(--accent);filter:none}
@@ -18,13 +26,31 @@
 .chest.pop .face{animation:pop .35s}
 @keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
 .runline{text-align:center;font-size:17px;font-weight:600;min-height:26px;margin-bottom:10px}
-.wheelbox{position:relative;max-width:340px;margin:8px auto 14px}.wheelbox svg{width:100%;height:auto;display:block}
-.ptr{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:16px solid var(--accent);z-index:2}
+.wheelbox{position:relative;max-width:360px;margin:14px auto 16px}
+.wheelbox svg{width:100%;height:auto;display:block;filter:drop-shadow(0 14px 30px rgba(0,0,0,.45)) drop-shadow(0 0 22px rgba(212,160,23,.25))}
+.wheelbox .bulb{fill:#fff6c8;animation:bulb 1s steps(1) infinite}
+.wheelbox.spinning .bulb{animation-duration:.3s}
+.wheelbox.win .bulb{animation:bulbwin .18s steps(1) infinite}
+.wheelbox.win svg{animation:wheelwin 1.2s ease-out}
+@keyframes bulb{0%{fill:#fff6c8;filter:drop-shadow(0 0 2px #ffd54a)}50%{fill:#6b5a1e;filter:none}}
+@keyframes bulbwin{0%{fill:#fff}50%{fill:#ff3b6b}}
+@keyframes wheelwin{30%{transform:scale(1.04)}}
+.ptr{position:absolute;top:-10px;left:50%;transform:translateX(-50%);transform-origin:50% 0;width:28px;height:36px;z-index:2;background:linear-gradient(180deg,#fff3b0,#d4a017 55%,#7a5200);clip-path:polygon(0 0,100% 0,50% 100%);filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+.wheelbox.spinning .ptr{animation:ptrtick .14s ease-in-out infinite}
+@keyframes ptrtick{50%{transform:translateX(-50%) rotate(-14deg)}}
 #wg{transform-origin:100px 100px}
-.slot{display:flex;gap:10px;justify-content:center;background:var(--card2);border:1px solid var(--edge);border-radius:var(--r);padding:14px;margin:10px auto;max-width:380px}
-.reel{flex:1;max-width:100px;height:96px;overflow:hidden;background:var(--bg);border:1px solid var(--edge);border-radius:var(--rs);position:relative}
-.reel:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.3),transparent 30%,transparent 70%,rgba(0,0,0,.3));pointer-events:none}
-.strip>div{height:96px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:600;color:var(--accent)}
+.slot{display:flex;gap:10px;justify-content:center;background:linear-gradient(180deg,#3a0d14,#16060a);border-radius:22px;padding:16px;margin:12px auto;max-width:380px;position:relative;box-shadow:inset 0 0 0 3px #d4a017,inset 0 0 0 5px #7a5200,0 14px 34px rgba(0,0,0,.45)}
+.slot:before{content:"";position:absolute;left:10px;right:10px;top:50%;height:2px;background:linear-gradient(90deg,transparent,#ffd54a,transparent);opacity:.5;pointer-events:none;z-index:1}
+.reel{flex:1;max-width:100px;height:96px;overflow:hidden;background:linear-gradient(180deg,#fdfdfd,#e9e9ee 50%,#fdfdfd);border-radius:14px;position:relative;box-shadow:inset 0 3px 8px rgba(0,0,0,.35)}
+.reel:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.35),transparent 30%,transparent 70%,rgba(0,0,0,.35));pointer-events:none}
+.strip>div{height:96px;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:700;color:#111;line-height:1}
+.slot.spinning .strip{filter:blur(1.5px)}
+.slot.win{animation:slotwin 1.2s ease-out}
+.slot.win .strip>div{animation:symwin .7s cubic-bezier(.3,1.6,.5,1) 2}
+.slot.big{animation:slotbig .3s steps(1) 6}
+@keyframes slotwin{30%{box-shadow:inset 0 0 0 3px #ffe57f,inset 0 0 0 5px #d4a017,0 0 50px rgba(255,213,74,.8)}}
+@keyframes slotbig{0%{box-shadow:inset 0 0 0 4px #fff,0 0 60px #ffd54a}50%{box-shadow:inset 0 0 0 4px #ff3b6b,0 0 60px #ff3b6b}}
+@keyframes symwin{40%{transform:scale(1.3) rotate(-6deg)}}
 .paytable{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;font-size:14px}
 .paytable div{background:var(--fill);border-radius:10px;padding:6px 8px;text-align:center}
 .track{background:var(--fill);border-radius:var(--rs);padding:4px 0;overflow:hidden}

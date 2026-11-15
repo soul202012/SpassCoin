@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, onLeave, stakeBox, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, onLeave, stakeBox, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let risk = 'medium', stake = 1;
@@ -104,7 +104,7 @@ export function init(box, ctx) {
     state.me.balance = Number(d.balance); setBal();
     const rl = resultLine(d.payout, v);
     res.textContent = 'x' + d.mult + ': ' + rl.t; res.style.color = rl.c;
-    if (d.net > 0) { d.mult >= 10 ? sfx.big() : sfx.win(); celebrate(d.payout, v); } else if (d.payout > 0) sfx.coin(); else sfx.lose();
+    if (d.net > 0) { d.mult >= 10 ? sfx.big() : sfx.win(); celebrate(d.payout, v); } else if (d.payout > 0) sfx.coin(); else (sfx.lose(), loseFx());
     busy = false; go.disabled = false;
     setTimeout(() => { if (alive && !busy) { ball = null; trail = []; frame(); } }, 1500);
   };

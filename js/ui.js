@@ -108,8 +108,59 @@ export function resultLine(payout, stake) {
   return { t: '\u2212' + coinsText(stake), c: 'var(--red)' };
 }
 export const isBigWin = (payout, stake) => payout >= 20 && payout >= stake * 10;
+
+// Konfetti auf einer Leinwand über der Seite; emojis = optionale Liste, die zwischen die Schnipsel gemischt wird
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+export function confetti(n, emojis) {
+  if (reduceMotion()) return;
+  const cv = el('canvas', 'fx-canvas'), dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, Hh = innerHeight;
+  cv.width = W * dpr; cv.height = Hh * dpr; document.body.appendChild(cv);
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#d4af37';
+  const cols = [acc, '#ffd54a', '#ff4d8d', '#4dd0ff', '#7cff6b', '#b388ff', '#ffffff'];
+  const ps = Array.from({ length: n }, () => ({
+    x: W / 2 + (Math.random() - 0.5) * W * 0.3, y: Hh * 0.42, vx: (Math.random() - 0.5) * 14, vy: -6 - Math.random() * 12,
+    r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4, s: 5 + Math.random() * 7, c: cols[(Math.random() * cols.length) | 0],
+    e: emojis && Math.random() < 0.35 ? emojis[(Math.random() * emojis.length) | 0] : null,
+  }));
+  const t0 = performance.now();
+  const step = (now) => {
+    g.clearRect(0, 0, W, Hh); let alive = 0;
+    ps.forEach((p) => {
+      p.vy += 0.32; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      if (p.y < Hh + 40) alive++;
+      g.save(); g.translate(p.x, p.y); g.rotate(p.r);
+      if (p.e) { g.font = (p.s * 3) + 'px serif'; g.fillText(p.e, -p.s, p.s); } else { g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); }
+      g.restore();
+    });
+    if (alive && now - t0 < 4000) requestAnimationFrame(step); else cv.remove();
+  };
+  requestAnimationFrame(step);
+}
+// "+X" schwebt über dem Ergebnis nach oben
+function floatAmount(text) {
+  const anchor = document.querySelector('.gamewrap .res, .gamewrap .runline, .gamewrap');
+  const r = anchor ? anchor.getBoundingClientRect() : { left: innerWidth / 2, width: 0, top: innerHeight / 2 };
+  const f = el('div', 'fx-float', text); f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = (r.top + window.scrollY) + 'px';
+  document.body.appendChild(f); setTimeout(() => f.remove(), 1500);
+}
+// Bei Verlust: Spielfeld kurz schütteln
+export function loseFx() {
+  const w = document.querySelector('.gamewrap'); if (!w || reduceMotion()) return;
+  w.classList.remove('fx-shake-box'); void w.offsetWidth; w.classList.add('fx-shake-box');
+  if (navigator.vibrate) navigator.vibrate(60);
+}
+
 let bwTimer = 0;
+// Jeder Gewinn feiert: kleiner Gewinn = Konfetti und "+X", ab 3× mehr Konfetti mit Münzen, ab 10× die grosse Einblendung
 export function celebrate(payout, stake) {
+  if (payout <= stake) return;
+  const ratio = payout / Math.max(1, stake), w = document.querySelector('.gamewrap');
+  floatAmount('+' + payout);
+  if (w) { w.classList.remove('fx-win-box'); void w.offsetWidth; w.classList.add('fx-win-box'); }
+  document.querySelectorAll('.gamewrap .pcard').forEach((c) => { c.classList.remove('win-pulse'); void c.offsetWidth; c.classList.add('win-pulse'); });
+  if (navigator.vibrate) navigator.vibrate(ratio >= 3 ? [40, 50, 80] : 35);
+  confetti(isBigWin(payout, stake) ? 220 : ratio >= 3 ? 110 : 45, ratio >= 3 ? ['🪙', '✨', '🎉', '💰'] : null);
   if (!isBigWin(payout, stake)) return;
   const old = document.querySelector('.bigwin'); if (old) old.remove();
   clearTimeout(bwTimer);

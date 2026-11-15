@@ -127,9 +127,31 @@ a{color:var(--accent)}
 @keyframes shift{to{background-position:200% 0}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes rise{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
-.fx-glow{text-shadow:0 0 8px currentColor}
-.fx-sparkle:after{content:" *"}
-.fx-crown:before{content:"\2655  "}
+/* Namens-Effekte aus dem Shop (.ch = einzelner Buchstabe, --i = Position) */
+.fx-glow{text-shadow:0 0 8px currentColor,0 0 18px currentColor}
+.fx-sparkle:before,.fx-sparkle:after{content:"\2728";display:inline-block;margin:0 .2em;animation:twinkle 1.6s ease-in-out infinite;-webkit-text-fill-color:initial}
+.fx-sparkle:after{animation-delay:.8s}
+.fx-crown{position:relative;display:inline-block}
+.fx-crown:before{content:"\1F451";position:absolute;left:50%;top:-.95em;font-size:.8em;transform:translateX(-50%) rotate(-8deg);animation:crownbob 2.2s ease-in-out infinite;-webkit-text-fill-color:initial}
+.fx-pulse{display:inline-block;animation:fxpulse 1.6s ease-in-out infinite}
+.fx-rainbow{animation:fxhue 3s linear infinite}
+.fx-neon{text-shadow:0 0 4px #fff,0 0 10px currentColor,0 0 22px currentColor,0 0 40px currentColor;animation:neon 3s linear infinite}
+.fx-fire{text-shadow:0 -1px 4px #ffd54a,0 -3px 8px #ff9a00,0 -6px 14px #ff4500,0 -10px 22px #c1121f;animation:fire .9s ease-in-out infinite alternate}
+.fx-wave .ch,.fx-bounce .ch,.fx-shake .ch,.fx-spin .ch{display:inline-block}
+.fx-wave .ch{animation:fxwave 1.6s ease-in-out infinite;animation-delay:calc(var(--i) * .1s)}
+.fx-bounce .ch{animation:fxbounce 1.4s cubic-bezier(.3,1.6,.5,1) infinite;animation-delay:calc(var(--i) * .08s)}
+.fx-shake .ch{animation:jitter .35s steps(2) infinite;animation-delay:calc(var(--i) * -.07s)}
+.fx-spin .ch{animation:fxflip 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * .12s)}
+@keyframes twinkle{0%,100%{opacity:.35;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(20deg)}}
+@keyframes crownbob{0%,100%{transform:translateX(-50%) translateY(0) rotate(-8deg)}50%{transform:translateX(-50%) translateY(-3px) rotate(6deg)}}
+@keyframes fxpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes fxhue{to{filter:hue-rotate(360deg)}}
+@keyframes neon{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.55}}
+@keyframes fire{to{text-shadow:0 -2px 5px #ffe28a,0 -4px 10px #ffb300,0 -8px 18px #ff5a00,0 -13px 26px #e5383b}}
+@keyframes fxwave{0%,100%{transform:translateY(0)}50%{transform:translateY(-.25em)}}
+@keyframes fxbounce{0%,60%,100%{transform:translateY(0)}20%{transform:translateY(-.45em)}35%{transform:translateY(0) scaleY(.85)}}
+@keyframes jitter{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(.04em,-.04em) rotate(4deg)}100%{transform:translate(-.04em,.03em) rotate(-4deg)}}
+@keyframes fxflip{0%,70%{transform:rotate(0)}85%{transform:rotate(360deg)}100%{transform:rotate(360deg)}}
 .bigwin{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.62),rgba(0,0,0,.25) 70%);animation:bwfade 3.2s ease forwards}
 .bw-box{position:relative;text-align:center;animation:bwpop 3.2s cubic-bezier(.2,.9,.3,1) forwards}
 .bw-label{font-size:13px;letter-spacing:.35em;text-transform:uppercase;color:#fff;opacity:.85}

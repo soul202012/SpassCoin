@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, sleep, onLeave, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, sleep, onLeave, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let ch = null;
@@ -78,7 +78,7 @@ async function openChest(i) {
   if (r.error) { update(); return toast(errText(r.error), true); }
   const d = r.data;
   if (d.result === 'bomb') {
-    sfx.bomb(); ch.phase = 'over'; setCell(i, 'bomb'); ch.cells[i].classList.add('pop'); revealRest(d.layout); ch.opened = {};
+    (sfx.bomb(), loseFx()); ch.phase = 'over'; setCell(i, 'bomb'); ch.cells[i].classList.add('pop'); revealRest(d.layout); ch.opened = {};
     ch.cells.forEach((c) => { c.disabled = true; }); ch.info.textContent = ''; ch.run.textContent = 'Bombe! Gewinn und Einsatz sind weg.'; ch.run.style.color = 'var(--red)';
     ch.act.innerHTML = ''; const a = el('button', null, 'Nochmal spielen'); a.onclick = () => { ch.run.style.color = ''; again(); }; ch.act.appendChild(a); return;
   }

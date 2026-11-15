@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, setBal } from '../state.js';
-import { el, toast, errText, onLeave, stakeBox, cardEl, resultLine, celebrate } from '../ui.js';
+import { el, toast, errText, onLeave, stakeBox, cardEl, resultLine, celebrate, loseFx } from '../ui.js';
 import { sfx } from '../audio.js';
 
 let bjStake = 1;
@@ -32,7 +32,7 @@ export async function init(box, ctx) {
       const rl = resultLine(st.payout, st.stake);
       const t = { win: ['Gewonnen: ' + rl.t, rl.c], blackjack: ['Blackjack: ' + rl.t, rl.c], push: ['Unentschieden, Einsatz zurück', ''], lose: ['Verloren: ' + rl.t, rl.c] }[st.result];
       if (t) { banner.textContent = t[0]; banner.style.color = t[1]; }
-      if (st.result === 'win' || st.result === 'blackjack') { sfx.win(); celebrate(st.payout, st.stake); } else if (st.result === 'lose') sfx.lose();
+      if (st.result === 'win' || st.result === 'blackjack') { sfx.win(); celebrate(st.payout, st.stake); } else if (st.result === 'lose') (sfx.lose(), loseFx());
       const n = el('button', null, 'Neue Runde austeilen'); n.onclick = start; act.appendChild(n);
     }
   }
