@@ -18,9 +18,9 @@ export async function renderLeaderboard(box) {
     PERIODS.forEach(([k, t]) => { const b = el('button', period === k ? 'on' : '', t); b.onclick = () => { period = k; go('rank'); }; seg1.appendChild(b); });
     box.appendChild(seg1);
   }
-  const card = el('div', 'card wide'); card.style.maxWidth = '900px'; card.style.width = '100%'; card.style.justifySelf = 'center';
+  const card = el('div', 'card wide');
   const list = el('div'); card.appendChild(list); box.appendChild(card);
-  const mine = el('div', 'wide'); mine.style.maxWidth = '900px'; mine.style.width = '100%'; mine.style.justifySelf = 'center'; box.appendChild(mine);
+  const mine = el('div', 'wide'); box.appendChild(mine);
 
   const fmt = (v) => (category === 'net' ? sgn(v) : v);
   function row(x, rank, withLook) {

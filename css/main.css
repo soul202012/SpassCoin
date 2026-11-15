@@ -41,7 +41,6 @@ body:before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none;
 .view{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px;align-items:start;animation:fade .25s var(--ease)}
 .view>.ptitle,.view>.seg,.view>.sub,.view>.back,.view>.adminseg,.view>.fullw,.view>.msg,.view>details,.view>.wide,.view>.gamewrap,.view>.tiles,.view>.kpis,.view>button.full{grid-column:1/-1}
 .gamewrap{max-width:820px;width:100%;margin:0 auto}
-.view>.card.wide,.view>.stocks,.view>.prof-head{max-width:900px;width:100%;justify-self:center}
 .view>.stocks,.view>.prof-head,.view>.shopgrid{grid-column:1/-1}
 .auth{max-width:420px;margin:12vh auto 0;padding:0 16px}
 .auth h1{margin:0 0 4px;font-size:28px;font-weight:700;letter-spacing:-.02em}
@@ -136,6 +135,17 @@ a{color:var(--accent)}
 @keyframes bwpop{0%{transform:scale(.6)}16%{transform:scale(1.06)}28%{transform:scale(1)}100%{transform:scale(1.02)}}
 @keyframes bwring{0%{transform:scale(.4);opacity:.9}100%{transform:scale(3.4);opacity:0}}
 @keyframes bwfly{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+/* PC: eine zentrierte Spalte, alle Karten an denselben Kanten wie Kopfzeile und Titel */
+@media (min-width:861px){
+  .topbar-in{max-width:1080px;padding:0 32px}
+  .page{max-width:1080px;padding:12px 32px 72px}
+  .ptitle{margin:28px 0 6px;font-size:40px}
+  .view{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .view>.hero{grid-column:1/-1}
+  .v-missions,.v-rank,.v-settings,.v-account{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 auto}
+  .v-settings>.card{margin-top:0 !important}
+}
+@media (min-width:1100px){.v-home{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:860px){
   .desk-nav{display:none}
   .menu-btn{display:block}

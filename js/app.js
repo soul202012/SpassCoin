@@ -95,7 +95,7 @@ export async function render() {
       ui.page.replaceChildren(el('p', 'msg', 'Lade …'));
       try {
         const fn = await VIEWS[tab]();
-        const box = el('div', 'view');
+        const box = el('div', 'view v-' + tab);
         if (!state.sub) box.appendChild(el('h1', 'ptitle', tab === 'home' ? 'Hallo, ' + state.me.username : TITLES[tab]));
         await fn(box);
         if (pending) continue;
