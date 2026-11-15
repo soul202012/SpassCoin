@@ -1,4 +1,4 @@
-const VERSION = 'spasscoin-2.2.0';
+const VERSION = 'spasscoin-2.3.0';
 const CORE = ['./', 'index.html', 'manifest.json', 'assets/icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {
@@ -11,7 +11,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request, url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== self.location.origin || req.headers.has('range')) return;
-  const isCode = req.mode === 'navigate' || /\.(js|css|json|html)$/.test(url.pathname) || url.pathname === '/';
+  // vendor/ hat die Version im Dateinamen und ändert sich nie: wie Bilder direkt aus dem Cache
+  const isCode = !url.pathname.startsWith('/vendor/') && (req.mode === 'navigate' || /\.(js|css|json|html)$/.test(url.pathname) || url.pathname === '/');
   if (isCode) {
     const net = fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; });
     // Bei langsamem Netz nach 2,5 s die gespeicherte Version nehmen statt ewig zu warten

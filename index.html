@@ -6,8 +6,8 @@
 <title>SpassCoin</title>
 <meta name="description" content="SpassCoin: Spiele, Missionen und Coins nur zum Spass.">
 <meta name="theme-color" content="#000000">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://aghqqdpdtxeajuhfcveq.supabase.co" crossorigin>
+<link rel="preload" href="vendor/supabase-2.45.4.js" as="script">
 <link rel="manifest" href="manifest.json">
 <link rel="modulepreload" href="js/app.js">
 <link rel="modulepreload" href="js/supabase.js">
@@ -17,9 +17,7 @@
 <link rel="modulepreload" href="js/audio.js">
 <link rel="modulepreload" href="js/auth.js">
 <link rel="modulepreload" href="js/notifications.js">
-<link rel="modulepreload" href="config.js">
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm" crossorigin>
-<link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
+<link rel="modulepreload" href="config.js"><link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -36,19 +34,8 @@
 <body>
 <div class="wrap" id="root"><p class="msg">Lade …</p></div>
 <noscript><p class="msg">Bitte JavaScript einschalten.</p></noscript>
+<script defer src="vendor/supabase-2.45.4.js"></script>
 <script type="module" src="js/app.js"></script>
-<script>
-// Notbremse: Falls die App nach 10 Sekunden nicht startet, Hilfe anzeigen (z. B. alter Zwischenspeicher)
-setTimeout(function () {
-  var r = document.getElementById('root');
-  if (r && r.children.length === 1 && /Lade/.test(r.textContent)) {
-    r.innerHTML = '<div class="card"><h2>Das Laden dauert zu lange</h2><p>Tippe auf den Knopf, um den Zwischenspeicher zu leeren und die Seite neu zu laden.</p><button class="full" id="rescue">Neu laden</button></div>';
-    document.getElementById('rescue').onclick = function () {
-      Promise.all([(navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (x) { return x.unregister(); })); }) : null),
-        (window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : null)]).then(function () { location.reload(); });
-    };
-  }
-}, 10000);
-</script>
+<script defer src="js/rescue.js"></script>
 </body>
 </html>
