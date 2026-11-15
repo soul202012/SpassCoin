@@ -1,9 +1,9 @@
 .shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.shopitem{background:var(--card);border:1px solid var(--edge);box-shadow:var(--shadow);border-radius:var(--r);padding:16px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;transition:transform .25s var(--ease),border-color .2s}
+.shopitem{background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow);border-radius:var(--r);padding:16px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;transition:transform .25s var(--ease),border-color .2s}
 .shopitem:hover{transform:translateY(-2px)}
 .shopitem .prev{width:72px;height:72px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden}
 .shopitem .nm{font-weight:600;font-size:14px}
 .shopitem .price{font-size:13px;color:var(--muted)}
-.shopitem.rare{border-color:color-mix(in srgb,#3b82f6 55%,transparent)}.shopitem.epic{border-color:color-mix(in srgb,#a855f7 55%,transparent)}.shopitem.legendary{border-color:color-mix(in srgb,var(--accent) 70%,transparent);background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 12%,var(--card)),var(--card) 55%)}
+.shopitem.rare{border-color:color-mix(in srgb,#3b82f6 55%,transparent)}.shopitem.epic{border-color:color-mix(in srgb,#a855f7 55%,transparent)}.shopitem.legendary{border-color:color-mix(in srgb,var(--accent) 70%,transparent);background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 20%,transparent),transparent 55%),var(--glass)}
 .rar{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .rar.rare{color:#5b9bf0}.rar.epic{color:#b085e0}.rar.legendary{color:var(--accent)}

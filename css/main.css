@@ -1,10 +1,13 @@
 /* Design "Midnight Gold": --accent und --accent-t setzt settings.js (Akzentfarbe frei waehlbar), data-theme schaltet hell/dunkel */
-:root{--bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--text:#f5f5f7;--muted:#8e8e93;--line:#38383a;--edge:rgba(255,255,255,.06);--fill:rgba(118,118,128,.24);--seg-on:#636366;--shadow:none;--accent:#d4af37;--accent-t:#111;--green:#30d158;--red:#ff453a;--r:18px;--rs:12px;--ease:cubic-bezier(.2,.8,.2,1);--soft:color-mix(in srgb,var(--accent) 14%,var(--card));color-scheme:dark}
-:root[data-theme="light"]{--bg:#f2f2f7;--card:#fff;--card2:#f2f2f7;--text:#1d1d1f;--muted:#6e6e73;--line:#e0e0e5;--edge:rgba(0,0,0,.04);--fill:rgba(118,118,128,.12);--seg-on:#fff;--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);--green:#248a3d;--red:#d70015;color-scheme:light}
+:root{--bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--text:#f5f5f7;--muted:#8e8e93;--line:#38383a;--edge:rgba(255,255,255,.11);--fill:rgba(118,118,128,.24);--seg-on:#636366;--glass:rgba(32,32,36,.52);--blur:saturate(180%) blur(26px);--blob:.34;--shadow:inset 0 1px 0 rgba(255,255,255,.10),0 10px 34px rgba(0,0,0,.38);--accent:#d4af37;--accent-t:#111;--green:#30d158;--red:#ff453a;--r:18px;--rs:12px;--ease:cubic-bezier(.2,.8,.2,1);--soft:color-mix(in srgb,var(--accent) 14%,var(--card));color-scheme:dark}
+:root[data-theme="light"]{--bg:#f2f2f7;--card:#fff;--card2:#f2f2f7;--text:#1d1d1f;--muted:#6e6e73;--line:#e0e0e5;--edge:rgba(255,255,255,.75);--fill:rgba(118,118,128,.12);--seg-on:#fff;--glass:rgba(255,255,255,.58);--blob:.22;--shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(0,0,0,.04),0 10px 30px rgba(40,40,90,.08);--green:#248a3d;--red:#d70015;color-scheme:light}
 *,*:before,*:after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-wrap:anywhere}
 button,input,select,textarea{font:inherit}
+/* Liquid Glass: farbige Lichtflecken hinter allem, sonst hat das Glas nichts zum Verwischen */
+body:before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none;opacity:var(--blob);filter:blur(50px);background:radial-gradient(38% 32% at 14% 12%,var(--accent),transparent 70%),radial-gradient(34% 30% at 88% 28%,#7c5cff,transparent 70%),radial-gradient(44% 38% at 48% 96%,#0ea5e9,transparent 70%),radial-gradient(28% 26% at 92% 88%,#ff5c8a,transparent 70%)}
+.card,.tile,.shopitem,.kpi,details.sec2,.seg,.adminseg{-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
 .topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--line);padding-top:env(safe-area-inset-top)}
 .topbar-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:18px;height:56px;padding:0 20px}
 .brand{display:flex;align-items:center;gap:8px;background:none;border:0;color:var(--text);font-weight:700;font-size:17px;letter-spacing:-.01em;padding:0;min-height:0;cursor:pointer}
@@ -42,16 +45,17 @@ button,input,select,textarea{font:inherit}
 .view>.stocks,.view>.prof-head,.view>.shopgrid{grid-column:1/-1}
 .auth{max-width:420px;margin:12vh auto 0;padding:0 16px}
 .auth h1{margin:0 0 4px;font-size:28px;font-weight:700;letter-spacing:-.02em}
-.card{background:var(--card);border:1px solid var(--edge);border-radius:var(--r);padding:20px;min-width:0;box-shadow:var(--shadow)}
+.card{background:var(--glass);border:1px solid var(--edge);border-radius:var(--r);padding:20px;min-width:0;box-shadow:var(--shadow)}
 .card h2{margin:0 0 12px;font-size:13px;color:var(--muted);font-weight:600;letter-spacing:0}
-.hero{background:linear-gradient(155deg,color-mix(in srgb,var(--accent) 16%,var(--card)) 0%,var(--card) 60%)}
+.hero{background:linear-gradient(155deg,color-mix(in srgb,var(--accent) 24%,transparent),transparent 60%),var(--glass)}
 .hero .big{margin-top:2px;color:var(--accent)}
 :root[data-theme="light"] .hero .big{color:color-mix(in srgb,var(--accent) 70%,#000)}
 .big{font-size:44px;font-weight:700;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}.big small{font-size:15px;font-weight:500;letter-spacing:0;color:var(--muted)}
 .sub{color:var(--muted);margin:0;font-size:15px}
 .hint{color:var(--muted);font-size:13px;margin:6px 0 0}
-button{font-weight:600;background:var(--accent);color:var(--accent-t);border:0;border-radius:99px;padding:10px 18px;cursor:pointer;min-height:42px;touch-action:manipulation;transition:filter .15s,background .2s,border-color .2s,transform .15s var(--ease);max-width:100%}
+button{font-weight:600;background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,0) 55%),var(--accent);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);color:var(--accent-t);border:0;border-radius:99px;padding:10px 18px;cursor:pointer;min-height:42px;touch-action:manipulation;transition:filter .15s,background .2s,border-color .2s,transform .15s var(--ease);max-width:100%}
 button:hover:not(:disabled){filter:brightness(1.08)}
+.nl,.brand,.tabbar button,.dd-menu button,.seg button:not(.on),.adminseg button:not(.on){box-shadow:none}
 button:active:not(:disabled){transform:scale(.97)}
 button:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 70%,transparent);outline-offset:2px}
 button.sec{background:var(--fill);color:var(--text);border:0}
@@ -136,16 +140,17 @@ a{color:var(--accent)}
   .desk-nav{display:none}
   .menu-btn{display:block}
   .topbar-in{padding:0 16px;gap:10px;height:52px}
-  .menu-panel{top:calc(52px + env(safe-area-inset-top));bottom:calc(58px + env(safe-area-inset-bottom))}
-  .page{padding:4px 16px calc(96px + env(safe-area-inset-bottom))}
+  .menu-panel{top:calc(106px + env(safe-area-inset-top))}
+  .page{padding:4px 16px calc(40px + env(safe-area-inset-bottom))}
   .ptitle{font-size:30px;margin-top:14px}
   .view{gap:12px}
   .big{font-size:38px}
-  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:21;background:color-mix(in srgb,var(--bg) 75%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar{display:flex;padding:0 4px 6px}
   .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;color:var(--muted);padding:2px 0;min-height:46px;border-radius:10px;font-size:10.5px;font-weight:600}
   .tabbar button svg{width:24px;height:24px}
   .tabbar button.on{color:var(--accent)}
   :root[data-theme="light"] .tabbar button.on{color:color-mix(in srgb,var(--accent) 75%,#000)}
   .tabbar button:hover:not(:disabled){filter:none}
 }
+@media (prefers-reduced-transparency:reduce){:root,:root[data-theme="light"]{--glass:var(--card)}body:before{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}

@@ -5,6 +5,7 @@
 .lb-rank{width:30px;text-align:center;font-weight:700;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
 .lb-rank.r1{font-size:20px;line-height:1}
 .lb-rank.r2{color:#a1a1aa}.lb-rank.r3{color:#c98a4b}
+:root[data-theme="light"] .lb-rank.r2{color:#71717a}
 .lb-name{flex:1;min-width:0}
 .lb-val{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .mycard{position:sticky;bottom:12px;background:color-mix(in srgb,var(--card) 85%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);border-radius:99px;padding:12px 20px;display:flex;justify-content:space-between;gap:12px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.2)}

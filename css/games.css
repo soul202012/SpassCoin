@@ -1,11 +1,12 @@
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-.tile{--c:var(--accent);background:var(--card);border:1px solid var(--edge);box-shadow:var(--shadow);border-radius:var(--r);padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:14px;min-height:150px;justify-content:space-between;transition:border-color .2s,transform .25s var(--ease),background .2s;min-width:0}
+.tile{--c:var(--accent);background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow);border-radius:var(--r);padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:14px;min-height:150px;justify-content:space-between;transition:border-color .2s,transform .25s var(--ease),background .2s;min-width:0}
 .tile:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent);transform:translateY(-3px)}
 .tile:active{transform:scale(.98)}
 .gic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1;background:color-mix(in srgb,var(--c) 22%,transparent);flex:none}
 .tile .nm{font-weight:700;font-size:16px;letter-spacing:-.01em}
 .tile .ds{font-size:13px;color:var(--muted);margin-top:2px}
 .tile .live{font-size:12px;font-weight:600;color:var(--c);margin-top:6px}
+:root[data-theme="light"] .tile .live{color:color-mix(in srgb,var(--c) 60%,#000)}
 .tile.off{cursor:default;opacity:.5}.tile.off:hover,.tile.off:active{transform:none;border-color:var(--edge)}
 .chests{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;margin:12px 0}
 .chest{aspect-ratio:1;padding:0;border-radius:var(--r);background:var(--fill);color:var(--muted);border:1px solid transparent;display:flex;align-items:center;justify-content:center;transition:transform .24s ease,background .3s,border-color .3s}

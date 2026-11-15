@@ -66,7 +66,7 @@ function buildShell() {
     const b = el('button'); b.innerHTML = svgIcon(k); b.appendChild(el('span', null, t));
     b.onclick = () => { closeMenus(); go(k); }; tabbar.appendChild(b); tItems[k] = b;
   });
-  const page = el('main', 'page'); root.appendChild(bar); root.appendChild(panel); root.appendChild(page); root.appendChild(tabbar);
+  const page = el('main', 'page'); root.appendChild(bar); root.appendChild(panel); root.appendChild(page); bar.appendChild(tabbar);
   ui = { bar, page, links, more, ddItems, pItems, tItems, closeMenus };
   setBal();
 }
