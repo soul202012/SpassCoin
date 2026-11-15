@@ -65,7 +65,7 @@ export async function renderHome(box) {
   box.appendChild(qc);
 }
 
-const KIND_LABEL = { game_chest: 'Truhen-Spiel', game_wheel: 'Glücksrad', game_slots: 'Slotmaschine', game_bj: 'Blackjack', game_race: 'Pferderennen',
+const KIND_LABEL = { game_chest: 'Schatzkisten', game_wheel: 'Glücksrad', game_slots: 'Slotmaschine', game_bj: 'Blackjack', game_race: 'Pferderennen',
   game_plinko: 'Plinko', game_scratch: 'Rubbellos', game_hilo: 'Higher or Lower', game_poker: 'Video Poker', stock_buy: 'Börse: Kauf', stock_sell: 'Börse: Verkauf',
   admin_adjust: 'Admin-Anpassung', grant: 'Admin (Anfrage bestätigt)', reward: 'Tägliche Belohnung', mission: 'Mission', shop: 'Shop', rescue: 'Unterstützung' };
 

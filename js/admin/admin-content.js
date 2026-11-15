@@ -11,7 +11,7 @@ export async function render(box, a, tab) {
 const DIFF = [['easy', 'Leicht'], ['medium', 'Mittel'], ['hard', 'Schwer']];
 const KINDS = [['rounds_any', 'Runden spielen (egal welches Spiel)'], ['rounds_game', 'Runden in einem Spiel spielen'], ['wins_any', 'Runden gewinnen (egal welches Spiel)'],
   ['wins_game', 'Runden in einem Spiel gewinnen'], ['win_streak_game', 'Gewinne in Folge in einem Spiel'], ['win_streak_any', 'Gewinne in Folge (egal wo)'], ['distinct_games', 'Verschiedene Spiele spielen']];
-const GAMES = [['chest', 'Truhen'], ['wheel', 'Glücksrad'], ['race', 'Pferderennen'], ['slots', 'Slotmaschine'], ['blackjack', 'Blackjack'], ['plinko', 'Plinko'], ['scratch', 'Rubbellose'], ['hilo', 'Higher or Lower'], ['poker', 'Video Poker']];
+const GAMES = [['chest', 'Schatzkisten'], ['wheel', 'Glücksrad'], ['race', 'Pferderennen'], ['slots', 'Slotmaschine'], ['blackjack', 'Blackjack'], ['plinko', 'Plinko'], ['scratch', 'Rubbellose'], ['hilo', 'Higher or Lower'], ['poker', 'Video Poker']];
 
 function saveRow(parent, label, fn, del) {
   const err = el('p', 'err'); parent.appendChild(err);

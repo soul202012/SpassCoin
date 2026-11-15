@@ -17,7 +17,7 @@
 .gamewrap .card{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none}
 .fx-ring{position:absolute;inset:-4px;border-radius:24px;pointer-events:none;z-index:2;opacity:0;will-change:opacity,transform;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 80%,transparent),0 0 40px color-mix(in srgb,var(--accent) 55%,transparent)}
 .fx-ring.strong{box-shadow:0 0 0 3px var(--accent),0 0 70px color-mix(in srgb,var(--accent) 70%,transparent),inset 0 0 40px color-mix(in srgb,var(--accent) 25%,transparent)}
-.chests{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;margin:12px 0}
+.chests{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;position:relative;margin:12px auto;max-width:520px}
 .chest{aspect-ratio:1;padding:0;border-radius:var(--r);background:var(--fill);color:var(--muted);border:1px solid transparent;display:flex;align-items:center;justify-content:center;transition:transform .24s ease,background .3s,border-color .3s}
 .chest:hover:not(:disabled){border-color:var(--accent);filter:none}
 .chest .face{display:flex;flex-direction:column;align-items:center;font-size:26px;font-weight:600;line-height:1.1}

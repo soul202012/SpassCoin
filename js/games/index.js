@@ -3,7 +3,7 @@ import { state, refreshMe, getConfig, go } from '../state.js';
 import { el, hms, onLeave, errText } from '../ui.js';
 
 const GAMES = [
-  { id: 'chest', nm: 'Truhen', ds: 'Truhen öffnen, Bomben meiden', file: 'chest.js', gi: true, ic: '💰', c: '#f5b942' },
+  { id: 'chest', nm: 'Schatzkisten', ds: 'Schatzkisten öffnen, Bomben meiden', file: 'chest.js', gi: true, ic: '💰', c: '#f5b942' },
   { id: 'wheel', nm: 'Glücksrad', ds: 'Drehen, mit Autospin', file: 'wheel.js', gi: true, ic: '🎡', c: '#a78bfa' },
   { id: 'slots', nm: 'Slotmaschine', ds: 'Drei gleiche Symbole', file: 'slots.js', gi: true, ic: '🎰', c: '#fb7185' },
   { id: 'blackjack', nm: 'Blackjack', ds: 'Gegen den Dealer', file: 'blackjack.js', gi: true, ic: '🃏', c: '#60a5fa' },

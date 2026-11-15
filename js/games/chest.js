@@ -25,11 +25,11 @@ function applyPos() {
 }
 function build() {
   const box = ch.box; box.innerHTML = '';
-  const c = el('div', 'card'); c.appendChild(el('h2', null, 'Truhen-Spiel'));
+  const c = el('div', 'card'); c.appendChild(el('h2', null, 'Schatzkisten'));
   ch.info = el('p', 'hint'); c.appendChild(ch.info);
   const grid = el('div', 'chests'); ch.cells = []; ch.slot = [];
   for (let i = 0; i < 12; i++) {
-    const d = el('button', 'chest'); d.type = 'button'; 
+    const d = el('button', 'chest'); d.type = 'button'; d.appendChild(el('span', 'face')); // setCell schreibt in dieses Element
     d.onclick = () => openChest(i);
     ch.cells.push(d); ch.slot.push(i); grid.appendChild(d); setCell(i, 'closed');
   }
@@ -45,11 +45,11 @@ function update() {
   ch.act.innerHTML = '';
   const st = ch.stake + (ch.stake === 1 ? ' Coin' : ' Coins');
   if (ch.phase === 'idle') { ch.info.textContent = 'Einsatz pro Spiel: ' + st + '.'; ch.run.textContent = ''; const b = el('button', null, 'Spiel starten'); b.onclick = start; ch.act.appendChild(b); }
-  else if (ch.phase === 'preview') { ch.info.textContent = 'Merk dir, was in den Truhen ist …'; ch.run.textContent = ''; }
-  else if (ch.phase === 'shuffle') { ch.info.textContent = 'Die Truhen werden gemischt …'; ch.run.textContent = ''; }
+  else if (ch.phase === 'preview') { ch.info.textContent = 'Merk dir, was in den Schatzkisten ist …'; ch.run.textContent = ''; }
+  else if (ch.phase === 'shuffle') { ch.info.textContent = 'Die Schatzkisten werden gemischt …'; ch.run.textContent = ''; }
   else if (ch.phase === 'play') {
     const n = Object.keys(ch.opened).length;
-    ch.info.textContent = 'Wähle eine Truhe. Einsatz: ' + st + '.'; ch.run.textContent = 'Gewinn bisher: ' + ch.running + (ch.running === 1 ? ' Coin' : ' Coins');
+    ch.info.textContent = 'Wähle eine Schatzkiste. Einsatz: ' + st + '.'; ch.run.textContent = 'Gewinn bisher: ' + ch.running + (ch.running === 1 ? ' Coin' : ' Coins');
     const o = el('button', 'ok', 'Aussteigen: +' + ch.running + ' Coins einlösen'); o.disabled = n === 0 || !!ch.busy; o.onclick = cash; ch.act.appendChild(o);
   } else if (ch.phase === 'over') { const a = el('button', null, 'Nochmal spielen'); a.onclick = again; ch.act.appendChild(a); }
 }

@@ -3,7 +3,7 @@ import { state, go } from '../state.js';
 import { el, toast, errText, r2, sgn, onLeave } from '../ui.js';
 import { nf, cbf, selectf, listEditor, sec, liveInfo, sum } from './forms.js';
 
-const NAMES = { chest: 'Truhen', wheel: 'Glücksrad', race: 'Pferderennen', slots: 'Slotmaschine', blackjack: 'Blackjack', plinko: 'Plinko', scratch: 'Rubbellose', hilo: 'Higher or Lower', poker: 'Video Poker', stocks: 'Börse' };
+const NAMES = { chest: 'Schatzkisten', wheel: 'Glücksrad', race: 'Pferderennen', slots: 'Slotmaschine', blackjack: 'Blackjack', plinko: 'Plinko', scratch: 'Rubbellose', hilo: 'Higher or Lower', poker: 'Video Poker', stocks: 'Börse' };
 const comb = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; };
 const snap = (o) => JSON.stringify(o);
 
@@ -74,11 +74,11 @@ function legacy(box, ov, savers) {
   const two = el('div', 'row2');
   two.appendChild(nf('Bank-Schwelle (%)', cfg, 'pool_threshold', { min: 1 }, recalc)); two.appendChild(nf('Stärke der Anpassung', cfg, 'pool_strength', { min: 0, step: '0.5' }, recalc)); g.appendChild(two);
 
-  const t = sec(box, 'Truhen');
+  const t = sec(box, 'Schatzkisten');
   const tw = el('div', 'row2'); tw.appendChild(nf('Einsatz (Coins)', cfg, 'chest_stake', { min: 1 }, recalc)); tw.appendChild(nf('Anzahl Bomben', cfg, 'chest_bombs', { min: 1 }, recalc)); t.appendChild(tw);
   const iv = el('input'); iv.value = cfg.chest_values.join(', '); iv.oninput = () => { cfg.chest_values = parseVals(iv.value); recalc(); };
-  t.appendChild(el('div', 'lbl', 'Truhenwerte (mit Komma, Anzahl = 12 minus Bomben)')); t.appendChild(iv);
-  liveInfo(t, infos, () => { const v = cfg.chest_values, b = cfg.chest_bombs; if (v.length + b !== 12 || v.some(isNaN)) return 'Truhenwerte (' + v.length + ') plus Bomben (' + b + ') müssen genau 12 ergeben.'; const e = chestEV(v, b); return 'Erwartungswert: nur 1 Truhe ' + sgn(e.one - cfg.chest_stake) + ', beste Strategie ' + sgn(e.best - cfg.chest_stake) + ' Coins'; });
+  t.appendChild(el('div', 'lbl', 'Werte der Schatzkisten (mit Komma, Anzahl = 12 minus Bomben)')); t.appendChild(iv);
+  liveInfo(t, infos, () => { const v = cfg.chest_values, b = cfg.chest_bombs; if (v.length + b !== 12 || v.some(isNaN)) return 'Werte der Schatzkisten (' + v.length + ') plus Bomben (' + b + ') müssen genau 12 ergeben.'; const e = chestEV(v, b); return 'Erwartungswert: nur 1 Kiste ' + sgn(e.one - cfg.chest_stake) + ', beste Strategie ' + sgn(e.best - cfg.chest_stake) + ' Coins'; });
 
   const w = sec(box, 'Glücksrad');
   w.appendChild(nf('Einsatz pro Drehung (Coins)', cfg, 'wheel_stake', { min: 1 }, recalc));
@@ -98,9 +98,9 @@ function legacy(box, ov, savers) {
   h.appendChild(listEditor(cfg.race_horses, [{ key: 'name', label: 'Name', type: 'text', max: 20 }, { key: 'color', label: 'Farbe', type: 'color' }, { key: 'weight', label: 'Chance (%)', min: 0, step: '0.1' }, { key: 'odds', label: 'Quote', min: 1.01, step: '0.1' }], null, true, recalc));
   liveInfo(h, infos, () => 'Summe der Chancen: ' + r2(sum(cfg.race_horses, 'weight')) + ' % · Erwartungswert pro Wette: ' + cfg.race_horses.map((x) => x.name + ' ' + sgn((x.weight / 100 * x.odds - 1) * 100) + ' %').join(', '));
   recalc();
-  savers.push({ name: 'Truhen, Rad, Slot, Blackjack, Pferde', run: async () => {
+  savers.push({ name: 'Schatzkisten, Rad, Slot, Blackjack, Pferde', run: async () => {
     if (snap(cfg) === init) return null;
-    if (cfg.chest_values.length + cfg.chest_bombs !== 12) return 'Truhen: Werte plus Bomben müssen 12 ergeben.';
+    if (cfg.chest_values.length + cfg.chest_bombs !== 12) return 'Schatzkisten: Werte plus Bomben müssen 12 ergeben.';
     if (Math.abs(sum(cfg.wheel_fields, 'weight') - 100) > 0.01) return 'Glücksrad: Die Chancen müssen 100 % ergeben.';
     if (Math.abs(sum(cfg.slot_symbols, 'weight') - 100) > 0.01) return 'Slot: Die Chancen müssen 100 % ergeben.';
     if (Math.abs(sum(cfg.race_horses, 'weight') - 100) > 0.01) return 'Pferde: Die Chancen müssen 100 % ergeben.';
