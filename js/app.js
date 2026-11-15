@@ -20,6 +20,15 @@ const VIEWS = {
 };
 const PRIMARY = [['home', 'Start'], ['games', 'Spiele'], ['missions', 'Missionen'], ['rank', 'Rangliste'], ['shop', 'Shop']];
 const MORE = [['profile', 'Profil'], ['account', 'Konto'], ['settings', 'Einstellungen']];
+const TITLES = Object.fromEntries(PRIMARY.concat(MORE, [['admin', 'Admin']]));
+const ICONS = {
+  home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  games: '<rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".6"/><circle cx="18" cy="13.5" r=".6"/>',
+  missions: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  rank: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/>',
+  shop: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+};
+const svgIcon = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[k] + '</svg>';
 
 let ui = null, rendering = false, pending = false;
 
@@ -52,8 +61,13 @@ function buildShell() {
   mb.onclick = () => { const o = panel.classList.toggle('open'); mb.setAttribute('aria-expanded', o); mb.textContent = o ? 'Schliessen' : 'Menü'; };
   function closeMenus() { dd.classList.remove('open'); panel.classList.remove('open'); mb.textContent = 'Menü'; mb.setAttribute('aria-expanded', 'false'); }
 
-  const page = el('main', 'page'); root.appendChild(bar); root.appendChild(panel); root.appendChild(page);
-  ui = { bar, page, links, more, ddItems, pItems, closeMenus };
+  const tabbar = el('nav', 'tabbar'), tItems = {};
+  PRIMARY.forEach(([k, t]) => {
+    const b = el('button'); b.innerHTML = svgIcon(k); b.appendChild(el('span', null, t));
+    b.onclick = () => { closeMenus(); go(k); }; tabbar.appendChild(b); tItems[k] = b;
+  });
+  const page = el('main', 'page'); root.appendChild(bar); root.appendChild(panel); root.appendChild(page); root.appendChild(tabbar);
+  ui = { bar, page, links, more, ddItems, pItems, tItems, closeMenus };
   setBal();
 }
 document.addEventListener('click', () => { const d = document.querySelector('.dd.open'); if (d) d.classList.remove('open'); });
@@ -65,6 +79,7 @@ function markActive() {
   ui.more.classList.toggle('on', inMore);
   Object.entries(ui.ddItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));
   Object.entries(ui.pItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));
+  Object.entries(ui.tItems).forEach(([k, b]) => b.classList.toggle('on', k === state.tab));
 }
 
 export async function render() {
@@ -80,7 +95,9 @@ export async function render() {
       ui.page.replaceChildren(el('p', 'msg', 'Lade …'));
       try {
         const fn = await VIEWS[tab]();
-        const box = el('div', 'view'); await fn(box);
+        const box = el('div', 'view');
+        if (!state.sub) box.appendChild(el('h1', 'ptitle', tab === 'home' ? 'Hallo, ' + state.me.username : TITLES[tab]));
+        await fn(box);
         if (pending) continue;
         ui.page.replaceChildren(box); setBal();
       } catch (e) { console.error(e); ui.page.replaceChildren(el('p', 'msg', 'Etwas ist schiefgelaufen. Bitte neu laden.')); }

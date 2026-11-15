@@ -1,12 +1,13 @@
-.prof-head{border-radius:var(--r);padding:22px 18px;border:1px solid var(--line);text-align:center;position:relative;overflow:hidden;min-width:0}
+.prof-head{border-radius:var(--r);padding:26px 18px;border:1px solid var(--edge);box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden;min-width:0}
 .prof-head .bar2{position:absolute;left:0;right:0;top:0;height:4px}
-.prof-head .nm{font-size:22px;font-weight:600;margin-top:8px}
+.prof-head .nm{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-top:10px}
 .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
-.statgrid div{background:var(--card2);border-radius:8px;padding:10px;text-align:center;min-width:0}
-.statgrid small{display:block;color:var(--muted);font-size:12px}.statgrid b{font-size:18px;font-weight:600}
+.statgrid div{background:var(--fill);border-radius:var(--rs);padding:12px 10px;text-align:center;min-width:0}
+.statgrid small{display:block;color:var(--muted);font-size:12px}.statgrid b{font-size:19px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .balchart{width:100%;height:170px;display:block}
 .pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
-.pick button{padding:8px 4px;border:1px solid var(--line);background:var(--card);border-radius:8px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--text);font-weight:500}
-.pick button.on{border-color:var(--accent)}
+.pick button{padding:8px 4px;border:1px solid transparent;background:var(--fill);border-radius:var(--rs);min-height:0;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--text);font-weight:500}
+.pick button:hover:not(:disabled){filter:none;border-color:var(--line)}
+.pick button.on{border-color:var(--accent);background:var(--soft)}
 .pick button.locked{opacity:.4}
-.pick .prev{width:44px;height:44px;border-radius:8px}
+.pick .prev{width:44px;height:44px;border-radius:10px}

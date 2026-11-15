@@ -3,16 +3,16 @@ import { state, refreshMe, getConfig, go } from '../state.js';
 import { el, hms, onLeave, errText } from '../ui.js';
 
 const GAMES = [
-  { id: 'chest', nm: 'Truhen', ds: 'Truhen öffnen, Bomben meiden', file: 'chest.js', gi: true },
-  { id: 'wheel', nm: 'Glücksrad', ds: 'Drehen, mit Autospin', file: 'wheel.js', gi: true },
-  { id: 'slots', nm: 'Slotmaschine', ds: 'Drei gleiche Symbole', file: 'slots.js', gi: true },
-  { id: 'blackjack', nm: 'Blackjack', ds: 'Gegen den Dealer', file: 'blackjack.js', gi: true },
-  { id: 'race', nm: 'Pferderennen', ds: 'Täglich 19:00 Uhr', file: 'race.js', live: true },
-  { id: 'plinko', nm: 'Plinko', ds: 'Kugel fallen lassen', file: 'plinko.js' },
-  { id: 'scratch', nm: 'Rubbellose', ds: 'Felder freirubbeln', file: 'scratchcards.js' },
-  { id: 'hilo', nm: 'Higher or Lower', ds: 'Höher oder tiefer', file: 'higher-lower.js' },
-  { id: 'poker', nm: 'Video Poker', ds: 'Jacks or Better', file: 'video-poker.js' },
-  { id: 'stocks', nm: 'Börse', ds: 'Erfundene Aktien handeln', file: 'stock-market.js' },
+  { id: 'chest', nm: 'Truhen', ds: 'Truhen öffnen, Bomben meiden', file: 'chest.js', gi: true, ic: '💰', c: '#f5b942' },
+  { id: 'wheel', nm: 'Glücksrad', ds: 'Drehen, mit Autospin', file: 'wheel.js', gi: true, ic: '🎡', c: '#a78bfa' },
+  { id: 'slots', nm: 'Slotmaschine', ds: 'Drei gleiche Symbole', file: 'slots.js', gi: true, ic: '🎰', c: '#fb7185' },
+  { id: 'blackjack', nm: 'Blackjack', ds: 'Gegen den Dealer', file: 'blackjack.js', gi: true, ic: '🃏', c: '#60a5fa' },
+  { id: 'race', nm: 'Pferderennen', ds: 'Täglich 19:00 Uhr', file: 'race.js', live: true, ic: '🏇', c: '#34d399' },
+  { id: 'plinko', nm: 'Plinko', ds: 'Kugel fallen lassen', file: 'plinko.js', ic: '🔮', c: '#c084fc' },
+  { id: 'scratch', nm: 'Rubbellose', ds: 'Felder freirubbeln', file: 'scratchcards.js', ic: '🎟️', c: '#f472b6' },
+  { id: 'hilo', nm: 'Higher or Lower', ds: 'Höher oder tiefer', file: 'higher-lower.js', ic: '🎲', c: '#38bdf8' },
+  { id: 'poker', nm: 'Video Poker', ds: 'Jacks or Better', file: 'video-poker.js', ic: '♠️', c: '#2dd4bf' },
+  { id: 'stocks', nm: 'Börse', ds: 'Erfundene Aktien handeln', file: 'stock-market.js', ic: '📈', c: '#4ade80' },
 ];
 
 export function racePhase(st, now) {
@@ -36,7 +36,8 @@ export async function renderGames(box) {
   const grid = el('div', 'tiles'); let liveEl = null;
   GAMES.forEach((g) => {
     const t = cfg && cfg.toggles && cfg.toggles[g.id], off = t && t.enabled === false;
-    const d = el('div', 'tile' + (off ? ' off' : ''));
+    const d = el('div', 'tile' + (off ? ' off' : '')); d.style.setProperty('--c', g.c);
+    d.appendChild(el('div', 'gic', g.ic));
     const top = el('div'); top.appendChild(el('div', 'nm', g.nm)); top.appendChild(el('div', 'ds', off ? 'Pausiert' : g.ds)); d.appendChild(top);
     if (g.live && !off) { liveEl = el('div', 'live', ''); d.appendChild(liveEl); }
     if (!off) d.onclick = () => go('games', g.id);

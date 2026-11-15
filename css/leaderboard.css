@@ -1,17 +1,19 @@
-.lb-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-top:1px solid var(--line);cursor:pointer;border-radius:8px;min-width:0;transition:background .15s}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 10px;border-top:.5px solid var(--line);cursor:pointer;border-radius:var(--rs);min-width:0;transition:background .2s}
 .lb-row:first-child{border-top:0}
-.lb-row:hover{background:var(--card2)}
+.lb-row:hover{background:var(--fill)}
 .lb-row.me{background:var(--soft)}
-.lb-rank{width:30px;text-align:center;font-weight:600;color:var(--muted);flex:none}
+.lb-rank{width:30px;text-align:center;font-weight:700;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
+.lb-rank.r1{font-size:20px;line-height:1}
+.lb-rank.r2{color:#a1a1aa}.lb-rank.r3{color:#c98a4b}
 .lb-name{flex:1;min-width:0}
-.lb-val{font-weight:600;white-space:nowrap}
-.mycard{position:sticky;bottom:12px;background:var(--card2);border:1px solid var(--accent);border-radius:var(--r);padding:11px 16px;display:flex;justify-content:space-between;gap:12px;font-weight:600}
-.mission{padding:12px 0;border-top:1px solid var(--line)}.mission:first-child{border-top:0}
+.lb-val{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.mycard{position:sticky;bottom:12px;background:color-mix(in srgb,var(--card) 85%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);border-radius:99px;padding:12px 20px;display:flex;justify-content:space-between;gap:12px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.2)}
+.mission{padding:13px 0;border-top:.5px solid var(--line)}.mission:first-child{border-top:0}
 .mission .top2{display:flex;justify-content:space-between;gap:12px;align-items:center}
-.diff{font-size:11px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--card2)}
+.diff{font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--fill)}
 .diff.easy{color:var(--green)}.diff.hard{color:var(--red)}.diff.medium{color:var(--accent)}
-.streakdots{display:flex;gap:6px;margin:8px 0}
-.streakdots div{flex:1;text-align:center;background:var(--card2);border-radius:8px;padding:6px 2px;font-size:12px;min-width:0}
-.streakdots div b{display:block;font-size:15px;font-weight:600}
-.streakdots div.cur{outline:1px solid var(--accent)}
+.streakdots{display:flex;gap:6px;margin:10px 0}
+.streakdots div{flex:1;text-align:center;background:var(--fill);border-radius:var(--rs);padding:8px 2px;font-size:12px;min-width:0;transition:background .2s}
+.streakdots div b{display:block;font-size:15px;font-weight:700}
+.streakdots div.cur{box-shadow:inset 0 0 0 1.5px var(--accent)}
 .streakdots div.done{background:var(--accent);color:var(--accent-t)}

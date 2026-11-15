@@ -11,7 +11,7 @@ export function applyTheme() {
   const r = parseInt(c.substr(1, 2), 16), g = parseInt(c.substr(3, 2), 16), b = parseInt(c.substr(5, 2), 16);
   const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   h.style.setProperty('--accent', c); h.style.setProperty('--accent-t', lum > 0.6 ? '#111111' : '#ffffff');
-  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = S.theme === 'light' ? '#ffffff' : '#0a0a0a';
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = S.theme === 'light' ? '#f2f2f7' : '#000000';
 }
 let timer = null;
 export function saveSettings() {
@@ -30,6 +30,9 @@ export function loadSettings() {
 
 const ACCENTS = [['#d4af37', 'Gold'], ['#8b5cf6', 'Violett'], ['#22c55e', 'Grün'], ['#3b82f6', 'Blau'], ['#ef4444', 'Rot'], ['#ec4899', 'Pink'],
   ['#f97316', 'Orange'], ['#14b8a6', 'Türkis'], ['#06b6d4', 'Cyan'], ['#84cc16', 'Limette'], ['#fb7185', 'Rosa'], ['#e5e7eb', 'Silber']];
+
+// Neu zeichnen, aber den grossen Seitentitel stehen lassen
+const redo = (box) => { box.querySelectorAll(':scope > :not(.ptitle)').forEach((n) => n.remove()); renderSettings(box); };
 
 export async function renderSettings(box) {
   const S = state.S, row = (label, ctrl) => { const r = el('div', 'srow'); r.appendChild(el('span', null, label)); r.appendChild(ctrl); return r; };
@@ -65,23 +68,23 @@ export async function renderSettings(box) {
   const d = el('div', 'card'); d.appendChild(el('h2', null, 'Aussehen'));
   const seg = el('div', 'seg');
   [['dark', 'Dunkel (Schwarz)'], ['light', 'Hell (Weiss)']].forEach(([k, t]) => {
-    const b = el('button', S.theme === k ? 'on' : '', t); b.onclick = () => { S.theme = k; saveSettings(); box.innerHTML = ''; renderSettings(box); }; seg.appendChild(b);
+    const b = el('button', S.theme === k ? 'on' : '', t); b.onclick = () => { S.theme = k; saveSettings(); redo(box); }; seg.appendChild(b);
   });
   d.appendChild(seg);
   d.appendChild(el('div', 'lbl', 'Akzentfarbe'));
   const sw = el('div', 'swatches');
   ACCENTS.forEach(([c, name]) => {
     const b = el('button', 'sw' + (S.accent.toLowerCase() === c ? ' on' : '')); b.style.background = c; b.title = name;
-    b.onclick = () => { S.accent = c; saveSettings(); box.innerHTML = ''; renderSettings(box); }; sw.appendChild(b);
+    b.onclick = () => { S.accent = c; saveSettings(); redo(box); }; sw.appendChild(b);
   });
   const pick = el('input'); pick.type = 'color'; pick.value = /^#[0-9a-f]{6}$/i.test(S.accent) ? S.accent : '#d4af37'; pick.style.width = '60px'; pick.style.margin = '0'; pick.title = 'Eigene Farbe';
-  pick.onchange = () => { S.accent = pick.value; saveSettings(); box.innerHTML = ''; renderSettings(box); };
+  pick.onchange = () => { S.accent = pick.value; saveSettings(); redo(box); };
   sw.appendChild(pick); d.appendChild(sw);
   box.appendChild(d);
 
   const pushBox = el('div'); box.appendChild(pushBox); await renderPushSettings(pushBox);
 
-  const rs = el('button', 'sec full', 'Einstellungen zurücksetzen'); rs.onclick = () => { state.S = { ...DEFAULTS }; saveSettings(); box.innerHTML = ''; renderSettings(box); };
+  const rs = el('button', 'sec full', 'Einstellungen zurücksetzen'); rs.onclick = () => { state.S = { ...DEFAULTS }; saveSettings(); redo(box); };
   box.appendChild(rs);
 
   const cr = el('div', 'card'); cr.style.marginTop = '14px'; cr.appendChild(el('h2', null, 'Credits'));

@@ -1,4 +1,4 @@
-const VERSION = 'spasscoin-2.0.0';
+const VERSION = 'spasscoin-2.1.0';
 const CORE = ['./', 'index.html', 'manifest.json', 'assets/icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {

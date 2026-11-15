@@ -25,7 +25,7 @@ export async function renderLeaderboard(box) {
   const fmt = (v) => (category === 'net' ? sgn(v) : v);
   function row(x, rank, withLook) {
     const r = el('div', 'lb-row' + (x.me || x.username === state.me.username ? ' me' : ''));
-    r.appendChild(el('div', 'lb-rank', String(rank)));
+    r.appendChild(el('div', 'lb-rank' + (rank <= 3 ? ' r' + rank : ''), rank === 1 ? '👑' : String(rank)));
     if (withLook) r.appendChild(avatarEl(x, 34));
     const nm = el('div', 'lb-name'); nm.appendChild(withLook ? nameEl(x) : el('span', 'pname', x.username)); r.appendChild(nm);
     r.appendChild(el('div', 'lb-val', fmt(x.value) + ' ' + UNIT[category]));
