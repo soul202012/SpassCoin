@@ -1,6 +1,6 @@
 import { rpc } from '../supabase.js';
 import { state, go } from '../state.js';
-import { el, toast, errText, hms } from '../ui.js';
+import { el, toast, errText, hms, onLeave } from '../ui.js';
 import { sfx } from '../audio.js';
 
 const DIFF = { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' };
@@ -12,10 +12,19 @@ export async function renderMissions(box) {
   const head = el('div', 'card'); head.appendChild(el('h2', null, 'Tägliche Missionen'));
   head.appendChild(el('p', null, done + ' von ' + list.length + ' geschafft'));
   const bar = el('div', 'bar'), fill = el('div'); fill.style.width = (list.length ? done / list.length * 100 : 0) + '%'; bar.appendChild(fill); head.appendChild(bar);
-  const lt = new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Zurich' }).replace(' ', 'T');
-  const now = new Date(lt), mid = new Date(now); mid.setHours(24, 0, 0, 0);
-  head.appendChild(el('p', 'hint', 'Neue Missionen in ' + hms(mid - now) + ' (Mitternacht, Schweizer Zeit).'));
+  const allClaimed = list.length > 0 && list.every((m) => m.claimed), nextAt = list.length && list[0].next_at ? new Date(list[0].next_at).getTime() : 0;
+  head.appendChild(el('p', 'hint', allClaimed ? 'Alle geschafft, stark!' : 'Schaffst du alle drei, gibt es 3 Stunden später neue Missionen (spätestens um Mitternacht).'));
   box.appendChild(head);
+  // Grosser Timer, sobald alle Belohnungen abgeholt sind; bei 0 kommen die neuen Missionen automatisch
+  if (allClaimed && nextAt) {
+    const t = el('div', 'card mission-timer');
+    t.appendChild(el('h2', null, 'Neue Missionen in'));
+    const clock = el('div', 'mt-clock'); t.appendChild(clock);
+    t.appendChild(el('p', 'hint', 'Bis dahin: spielen, Coins sammeln, für die nächsten Missionen üben.'));
+    box.appendChild(t);
+    const tick = () => { const ms = nextAt - Date.now(); if (ms <= 0) { clearInterval(iv); go('missions'); return; } clock.textContent = hms(ms); };
+    const iv = setInterval(tick, 1000); tick(); onLeave(() => clearInterval(iv));
+  }
   const c = el('div', 'card wide');
   if (!list.length) c.appendChild(el('p', 'hint', 'Heute gibt es keine Missionen.'));
   list.forEach((m) => {

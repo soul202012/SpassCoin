@@ -10,7 +10,9 @@ export async function render(box, a, tab) {
 }
 const DIFF = [['easy', 'Leicht'], ['medium', 'Mittel'], ['hard', 'Schwer']];
 const KINDS = [['rounds_any', 'Runden spielen (egal welches Spiel)'], ['rounds_game', 'Runden in einem Spiel spielen'], ['wins_any', 'Runden gewinnen (egal welches Spiel)'],
-  ['wins_game', 'Runden in einem Spiel gewinnen'], ['win_streak_game', 'Gewinne in Folge in einem Spiel'], ['win_streak_any', 'Gewinne in Folge (egal wo)'], ['distinct_games', 'Verschiedene Spiele spielen']];
+  ['wins_game', 'Runden in einem Spiel gewinnen'], ['win_streak_game', 'Gewinne in Folge in einem Spiel'], ['win_streak_any', 'Gewinne in Folge (egal wo)'], ['distinct_games', 'Verschiedene Spiele spielen'],
+  ['coins_won', 'Coins gewinnen (Summe der Netto-Gewinne)'], ['coins_staked', 'Coins setzen (Summe der Einsätze)'],
+  ['big_win_any', 'Grosse Gewinne ab 5× Einsatz (egal wo)'], ['big_win_game', 'Grosse Gewinne ab 5× Einsatz in einem Spiel']];
 const GAMES = [['chest', 'Schatzkisten'], ['wheel', 'Glücksrad'], ['race', 'Pferderennen'], ['slots', 'Slotmaschine'], ['blackjack', 'Blackjack'], ['plinko', 'Plinko'], ['scratch', 'Rubbellose'], ['hilo', 'Higher or Lower'], ['poker', 'Video Poker']];
 
 function saveRow(parent, label, fn, del) {
