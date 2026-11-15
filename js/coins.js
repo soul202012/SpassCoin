@@ -80,7 +80,6 @@ export async function renderAccount(box) {
 }
 function renderSend(box) {
   const me = state.me, c = el('div', 'card'); c.appendChild(el('h2', null, 'Coins senden'));
-  c.appendChild(el('p', 'hint', 'Kontostand: ' + me.balance + ' Coins'));
   const code = inp('Code des Empfängers (6 Zahlen)', 'text', 'numeric'); code.maxLength = 6; code.style.marginTop = '10px';
   const am = inp('Anzahl Coins', 'number', 'numeric'); am.min = '1';
   const goBtn = el('button', 'full', 'Senden');

@@ -74,7 +74,7 @@ export async function init(box) {
     } else tc.appendChild(el('p', 'hint', 'Du besitzt noch keine Aktien dieser Firma.'));
     const n = inp('Anzahl Aktien', 'number', 'numeric'); n.min = '1'; n.value = '1'; n.style.marginTop = '10px'; tc.appendChild(n);
     const pv = el('p', 'hint'); tc.appendChild(pv);
-    const upd = () => { const k = parseInt(n.value, 10) || 0; pv.textContent = 'Kauf kostet ' + Math.ceil(c.price * k) + ' Coins · Verkauf bringt ' + Math.floor(c.price * k) + ' Coins · Du hast ' + state.me.balance + ' Coins'; };
+    const upd = () => { const k = parseInt(n.value, 10) || 0; pv.textContent = 'Kauf kostet ' + Math.ceil(c.price * k) + ' Coins · Verkauf bringt ' + Math.floor(c.price * k) + ' Coins'; };
     n.oninput = upd; upd();
     const row = el('div', 'btns'), buy = el('button', 'ok', 'Kaufen'), sell = el('button', 'no', 'Verkaufen'), all = el('button', 'sec', 'Alle verkaufen');
     buy.disabled = data.paused; sell.disabled = !h; all.disabled = !h;

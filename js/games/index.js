@@ -67,8 +67,7 @@ async function openGame(box, g, cfg) {
   if (t && t.enabled === false) { wrap.appendChild(el('p', 'msg', 'Dieses Spiel ist gerade pausiert.')); return; }
   const title = el('div', 'stat'); title.style.marginBottom = '10px';
   title.appendChild(el('b', null, g.nm));
-  const bal = el('span'); const bb = el('b', null, String(state.me.balance)); bb.setAttribute('data-bal', ''); bal.appendChild(bb); bal.appendChild(document.createTextNode(' Coins'));
-  title.appendChild(bal); wrap.appendChild(title);
+  wrap.appendChild(title);
   const inner = el('div'); wrap.appendChild(inner);
   let gi = null;
   if (g.gi) { const r = await rpc('game_info'); if (r.error || !r.data) { inner.appendChild(el('p', 'msg', errText(r.error))); return; } gi = r.data; }
