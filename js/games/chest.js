@@ -17,7 +17,7 @@ export async function init(box, ctx) {
 function setCell(i, st, v, dim) {
   const c = ch.cells[i], f = c.firstChild;
   c.className = 'chest' + (st !== 'closed' ? ' open' : '') + (st === 'bomb' ? ' bomb' : '') + (dim ? ' dim' : '');
-  f.textContent = st === 'closed' ? '?' : st === 'bomb' ? 'Bombe' : '+' + v;
+  f.textContent = st === 'closed' ? '?' : st === 'bomb' ? '💣' : '+' + v;
 }
 function applyPos() {
   if (!ch || !ch.cells.length) return;
@@ -78,7 +78,7 @@ async function openChest(i) {
   if (r.error) { update(); return toast(errText(r.error), true); }
   const d = r.data;
   if (d.result === 'bomb') {
-    (sfx.bomb(), loseFx()); ch.phase = 'over'; setCell(i, 'bomb'); ch.cells[i].classList.add('pop'); revealRest(d.layout); ch.opened = {};
+    (sfx.bomb(), loseFx()); ch.phase = 'over'; setCell(i, 'bomb'); ch.cells[i].classList.add('boom'); revealRest(d.layout); ch.opened = {};
     ch.cells.forEach((c) => { c.disabled = true; }); ch.info.textContent = ''; ch.run.textContent = 'Bombe! Gewinn und Einsatz sind weg.'; ch.run.style.color = 'var(--red)';
     ch.act.innerHTML = ''; const a = el('button', null, 'Nochmal spielen'); a.onclick = () => { ch.run.style.color = ''; again(); }; ch.act.appendChild(a); return;
   }
