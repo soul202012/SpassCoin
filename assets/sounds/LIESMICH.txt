@@ -1,0 +1,8 @@
+Soundeffekte
+============
+Alle Soundeffekte (Klicks, Münzen, Karten, Explosion, Hufe, Plinko, Rubbeln ...) werden direkt im Browser
+mit der Web Audio API erzeugt (Datei js/audio.js). Es gibt keine Fremddateien, deshalb gibt es auch
+keine Lizenzen oder Quellen, die genannt werden müssten.
+
+Wenn du einen Effekt später durch eine eigene Audiodatei ersetzen willst, lege die Datei hier ab
+(zum Beispiel assets/sounds/coin.mp3) und ersetze die passende Funktion in js/audio.js.

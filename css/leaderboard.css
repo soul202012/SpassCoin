@@ -1,0 +1,17 @@
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-top:1px solid var(--line);cursor:pointer;border-radius:8px;min-width:0;transition:background .15s}
+.lb-row:first-child{border-top:0}
+.lb-row:hover{background:var(--card2)}
+.lb-row.me{background:var(--soft)}
+.lb-rank{width:30px;text-align:center;font-weight:600;color:var(--muted);flex:none}
+.lb-name{flex:1;min-width:0}
+.lb-val{font-weight:600;white-space:nowrap}
+.mycard{position:sticky;bottom:12px;background:var(--card2);border:1px solid var(--accent);border-radius:var(--r);padding:11px 16px;display:flex;justify-content:space-between;gap:12px;font-weight:600}
+.mission{padding:12px 0;border-top:1px solid var(--line)}.mission:first-child{border-top:0}
+.mission .top2{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.diff{font-size:11px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--card2)}
+.diff.easy{color:var(--green)}.diff.hard{color:var(--red)}.diff.medium{color:var(--accent)}
+.streakdots{display:flex;gap:6px;margin:8px 0}
+.streakdots div{flex:1;text-align:center;background:var(--card2);border-radius:8px;padding:6px 2px;font-size:12px;min-width:0}
+.streakdots div b{display:block;font-size:15px;font-weight:600}
+.streakdots div.cur{outline:1px solid var(--accent)}
+.streakdots div.done{background:var(--accent);color:var(--accent-t)}

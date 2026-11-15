@@ -1,0 +1,3 @@
+# Nur für die Supabase-Kommandozeile. Die Funktion prüft Aufrufer selbst (Admin-Token oder Cron-Geheimnis).
+[functions.send-push]
+verify_jwt = false
