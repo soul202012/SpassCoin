@@ -24,7 +24,7 @@ export function renderAuth(root, onDone) {
         if (login.indexOf('@') < 0) {
           // Die E-Mail zum Benutzernamen sucht nur der Server, sie kommt nie bis in den Browser
           const r = await sb.functions.invoke('login-username', { body: { username: login, password: p.value } });
-          if (r.error && r.error.context && r.error.context.status === 429) throw 'Zu viele Fehlversuche. Bitte warte 15 Minuten und versuche es dann nochmal.';
+          if (r.error && r.error.context && r.error.context.status === 429) throw 'Zu viele Fehlversuche mit diesem Benutzernamen. Warte 15 Minuten oder melde dich gleich mit deiner E-Mail-Adresse an.';
           if (r.error || !r.data || !r.data.access_token) throw bad;
           const s = await sb.auth.setSession({ access_token: r.data.access_token, refresh_token: r.data.refresh_token });
           if (s.error) throw bad;

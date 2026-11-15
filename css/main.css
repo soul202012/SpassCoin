@@ -138,6 +138,8 @@ a{color:var(--accent)}
 .fx-neon{text-shadow:0 0 4px #fff,0 0 10px currentColor,0 0 22px currentColor,0 0 40px currentColor;animation:neon 3s linear infinite}
 .fx-fire{text-shadow:0 -1px 4px #ffd54a,0 -3px 8px #ff9a00,0 -6px 14px #ff4500,0 -10px 22px #c1121f;animation:fire .9s ease-in-out infinite alternate}
 .fx-wave .ch,.fx-bounce .ch,.fx-shake .ch,.fx-spin .ch{display:inline-block}
+/* Farbverlauf-Namen: bewegte Buchstaben brauchen den Verlauf selbst, sonst sind sie unsichtbar */
+.gtext .ch{background-image:inherit;background-size:inherit;background-position:inherit;-webkit-background-clip:text;background-clip:text}
 .fx-wave .ch{animation:fxwave 1.6s ease-in-out infinite;animation-delay:calc(var(--i) * .1s)}
 .fx-bounce .ch{animation:fxbounce 1.4s cubic-bezier(.3,1.6,.5,1) infinite;animation-delay:calc(var(--i) * .08s)}
 .fx-shake .ch{animation:jitter .35s steps(2) infinite;animation-delay:calc(var(--i) * -.07s)}
