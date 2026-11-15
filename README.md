@@ -66,15 +66,22 @@ Jede Datei ist einzeln austauschbar. Es gibt kein Hochladen für Spieler.
 
 Standardwerte (Auszahlungsquote = was langfristig an die Spieler zurückgeht):
 
+Seit November 2026 sind alle Spiele auf **rund 110 %** eingestellt (Migration `20261115000006_fair_odds_110.sql`):
+Wer lange spielt, gewinnt im Schnitt etwa 10 % seiner Einsätze dazu. Das bezahlt die Bank.
+
 | Spiel | Quote |
 |---|---|
-| Truhen, Glücksrad, Slotmaschine | etwa 100 % (ausgeglichen) |
-| Blackjack | etwa 99.5 % bei guter Strategie |
-| Pferderennen | etwa 100 % (Quoten fair, abgerundet) |
-| Plinko | 96.3 bis 96.4 % |
-| Rubbellose | 95.5 % |
-| Higher or Lower | 96 % bei bester Strategie |
-| Video Poker (8/5 Jacks or Better) | 97.3 % bei perfekter Strategie |
+| Truhen (5 Bomben, Werte 1,1,1,1,1,2,4) | 110.6 % bei bester Strategie |
+| Glücksrad | 110 % |
+| Slotmaschine | 111.4 % |
+| Blackjack (Gewinn 1.2×, Blackjack 2×) | etwa 110 % bei guter Strategie |
+| Pferderennen | 108.5 bis 110.4 % je Pferd |
+| Plinko | 109.7 / 110.1 / 110.0 % (niedrig / mittel / hoch) |
+| Rubbellose | 109.5 % |
+| Higher or Lower | 110.6 % bei bester Strategie |
+| Video Poker (9/6, Zwei Paare zahlen 3) | etwa 111 % bei guter Strategie |
+
+Krumme Auszahlungen werden zufällig auf- oder abgerundet (`round_payout`), damit die Quote auch bei 1 Coin Einsatz stimmt.
 
 Im Admin-Tab «Ökonomie» siehst du Einnahmen, Ausgaben, Quoten pro Spiel und den Verlauf der Bank.
 
