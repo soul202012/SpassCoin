@@ -18,15 +18,19 @@ export function renderAuth(root, onDone) {
     err = ''; info = ''; go.disabled = true;
     try {
       if (mode === 'login') {
-        const login = u.value.trim(); let email = login;
+        const login = u.value.trim();
         if (!login || !p.value) throw 'Bitte alles ausfüllen.';
+        const bad = 'Benutzername oder Passwort stimmt nicht (oder die E-Mail ist noch nicht bestätigt).';
         if (login.indexOf('@') < 0) {
-          const r = await rpc('email_for_username', { uname: login });
-          if (!r.data) throw 'Benutzername oder Passwort stimmt nicht.';
-          email = r.data;
+          // Die E-Mail zum Benutzernamen sucht nur der Server, sie kommt nie bis in den Browser
+          const r = await sb.functions.invoke('login-username', { body: { username: login, password: p.value } });
+          if (r.error || !r.data || !r.data.access_token) throw bad;
+          const s = await sb.auth.setSession({ access_token: r.data.access_token, refresh_token: r.data.refresh_token });
+          if (s.error) throw bad;
+        } else {
+          const s = await sb.auth.signInWithPassword({ email: login, password: p.value });
+          if (s.error) throw bad;
         }
-        const s = await sb.auth.signInWithPassword({ email, password: p.value });
-        if (s.error) throw 'Benutzername oder Passwort stimmt nicht (oder die E-Mail ist noch nicht bestätigt).';
         onDone();
       } else {
         const name = cleanName(u.value), mail = em.value.trim();
