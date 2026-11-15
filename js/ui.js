@@ -96,7 +96,9 @@ export function lineChart(points, opts = {}) {
   const up = points[points.length - 1][1] >= points[0][1];
   const col = opts.color || (up ? 'var(--green)' : 'var(--red)');
   svg.innerHTML = `<path d="${d} L${x(points.length - 1).toFixed(1)},${H} L${x(0).toFixed(1)},${H} Z" fill="${col}" opacity=".12"/>` +
-                  `<path d="${d}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+                  `<path d="${d}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke"/>` +
+                  // Punkte als runde Striche der Länge 0: bleiben rund, obwohl das Diagramm in die Breite gezogen wird
+                  (opts.dots ? `<path d="${points.map((p, i) => 'M' + x(i).toFixed(1) + ',' + y(p[1]).toFixed(1) + 'h0').join('')}" stroke="${col}" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>` : '');
   return svg;
 }
 

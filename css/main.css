@@ -160,6 +160,8 @@ a{color:var(--accent)}
   .ptitle{font-size:30px;margin-top:14px}
   .view{gap:12px}
   .big{font-size:38px}
+  /* iPhone zoomt bei Feldern unter 16px automatisch hinein, dann wirkt die Seite verschoben und verkleinert */
+  input,select,textarea{font-size:16px}
 }
 @media (prefers-reduced-transparency:reduce){:root,:root[data-theme="light"]{--glass:var(--card)}body:before{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}

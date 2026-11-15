@@ -1,4 +1,4 @@
-const VERSION = 'spasscoin-2.1.0';
+const VERSION = 'spasscoin-2.2.0';
 const CORE = ['./', 'index.html', 'manifest.json', 'assets/icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {
@@ -13,8 +13,10 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET' || url.origin !== self.location.origin || req.headers.has('range')) return;
   const isCode = req.mode === 'navigate' || /\.(js|css|json|html)$/.test(url.pathname) || url.pathname === '/';
   if (isCode) {
-    e.respondWith(fetch(req).then((res) => { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); return res; })
-      .catch(() => caches.match(req).then((r) => r || caches.match('index.html'))));
+    const net = fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; });
+    // Bei langsamem Netz nach 2,5 s die gespeicherte Version nehmen statt ewig zu warten
+    const slow = new Promise((r) => setTimeout(r, 2500)).then(() => caches.match(req)).then((hit) => hit || net);
+    e.respondWith(Promise.race([net, slow]).catch(() => caches.match(req).then((r) => r || caches.match('index.html'))));
   } else {
     e.respondWith(caches.match(req).then((hit) => {
       const net = fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; }).catch(() => hit);

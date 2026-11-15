@@ -91,7 +91,9 @@ export async function render() {
       if (!ui || !root.contains(ui.bar)) buildShell();
       markActive(); setBal();
       const tab = VIEWS[state.tab] ? state.tab : 'home';
-      ui.page.replaceChildren(el('p', 'msg', 'Lade …'));
+      // Alte Seite kurz stehen lassen (nicht klickbar), "Lade …" erst wenn es wirklich dauert
+      ui.page.inert = true;
+      const slow = setTimeout(() => ui.page.replaceChildren(el('p', 'msg', 'Lade …')), 300);
       try {
         const fn = await VIEWS[tab]();
         const box = el('div', 'view v-' + tab);
@@ -99,7 +101,7 @@ export async function render() {
         await fn(box);
         if (pending) continue;
         ui.page.replaceChildren(box); setBal();
-      } catch (e) { console.error(e); ui.page.replaceChildren(el('p', 'msg', 'Etwas ist schiefgelaufen. Bitte neu laden.')); }
+      } catch (e) { console.error(e); ui.page.replaceChildren(el('p', 'msg', 'Etwas ist schiefgelaufen. Bitte neu laden.')); } finally { clearTimeout(slow); ui.page.inert = false; }
     } while (pending);
   } finally { rendering = false; }
 }
@@ -129,6 +131,8 @@ async function afterLogin(cb) {
     await refreshMe(true);
     if (!state.me) { renderAuth(root, afterLogin); return; }
     loadSettings(); readUrl(); render(); if (cb) cb();
+    // Alle Seiten im Hintergrund vorladen, damit ein Tab-Wechsel nur noch auf die Daten wartet
+    setTimeout(() => Object.values(VIEWS).forEach((f) => f().catch(() => {})), 1500);
     Promise.resolve(rpc('race_state')).then(() => refreshMe(true)).then(() => setBal()).catch(() => {});
   } catch (e) { startError(e); }
 }

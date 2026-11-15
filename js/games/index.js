@@ -44,6 +44,7 @@ export async function renderGames(box) {
     grid.appendChild(d);
   });
   box.appendChild(grid);
+  setTimeout(() => GAMES.forEach((g) => import('./' + g.file).catch(() => {})), 800); // Spiele vorladen
   if (liveEl) {
     Promise.resolve(rpc('race_state')).then((rs) => {
       if (!rs.data || !liveEl.isConnected) return;

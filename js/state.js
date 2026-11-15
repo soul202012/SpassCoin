@@ -19,9 +19,9 @@ export const canAdmin = () => !!(state.me && (state.me.is_admin || state.me.is_t
 let meAt = 0;
 export async function refreshMe(force) {
   if (!force && state.me && Date.now() - meAt < 2500) return state.me;
-  const s = await sb.auth.getSession();
-  if (!s.data.session) return null;
-  const r = await sb.from('profiles').select('*').eq('id', s.data.session.user.id).single();
+  let id = state.me && state.me.id;
+  if (!id) { const s = await sb.auth.getSession(); if (!s.data.session) return null; id = s.data.session.user.id; }
+  const r = await sb.from('profiles').select('*').eq('id', id).single();
   if (r.data) { state.me = r.data; meAt = Date.now(); }
   return state.me;
 }

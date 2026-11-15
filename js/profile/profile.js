@@ -41,12 +41,13 @@ export async function renderProfile(box) {
   const seg = el('div', 'seg');
   [[7, '7 Tage'], [30, '30 Tage'], [0, 'Allzeit']].forEach(([d, t]) => { const b = el('button', range === d ? 'on' : '', t); b.onclick = () => { range = d; go('profile'); }; seg.appendChild(b); });
   cc.appendChild(seg);
-  const pts = (hist.data || []).map((x) => [x.day, Number(x.balance)]);
+  const pts = (hist.data || []).map((x) => [x.ts, Number(x.balance)]);
   if (pts.length >= 2) {
-    const svg = lineChart(pts, { cls: 'balchart' }); cc.appendChild(svg);
-    const change = pts[pts.length - 1][1] - pts[0][1], dl = (hist.data || []).reduce((s, x) => s + Number(x.delta), 0);
+    const svg = lineChart(pts, { cls: 'balchart', dots: pts.length <= 80 }); cc.appendChild(svg);
+    const change = pts[pts.length - 1][1] - pts[0][1];
     const info = el('p', change >= 0 ? 'in' : 'out', (change >= 0 ? '▲ ' : '▼ ') + sgn(change) + ' Coins seit ' + fmtDay(pts[0][0]));
     cc.appendChild(info);
+    cc.appendChild(el('p', 'hint', 'Ein Punkt alle 5 Stunden.'));
   } else cc.appendChild(el('p', 'hint', 'Noch zu wenig Daten für ein Diagramm.'));
   box.appendChild(cc);
 }
