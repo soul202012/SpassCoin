@@ -24,10 +24,7 @@ function preview(it, equipped) {
 export async function renderShop(box) {
   await loadCatalog(true);
   const data = state.shopData, eq = data.equipped;
-  const head = el('div', 'card hero'); head.appendChild(el('h2', null, 'Dein Kontostand'));
-  const b = el('div', 'big', String(state.me.balance)); b.appendChild(el('small', null, ' Coins')); head.appendChild(b);
-   box.appendChild(head);
-  const seg = el('div', 'seg');
+  const seg = el('div', 'chips');
   Object.keys(LABEL).forEach((k) => { const bt = el('button', cat === k ? 'on' : '', LABEL[k]); bt.onclick = () => { cat = k; go('shop'); }; seg.appendChild(bt); });
   box.appendChild(seg);
   const grid = el('div', 'shopgrid');

@@ -24,6 +24,7 @@ export function renderAuth(root, onDone) {
         if (login.indexOf('@') < 0) {
           // Die E-Mail zum Benutzernamen sucht nur der Server, sie kommt nie bis in den Browser
           const r = await sb.functions.invoke('login-username', { body: { username: login, password: p.value } });
+          if (r.error && r.error.context && r.error.context.status === 429) throw 'Zu viele Fehlversuche. Bitte warte 15 Minuten und versuche es dann nochmal.';
           if (r.error || !r.data || !r.data.access_token) throw bad;
           const s = await sb.auth.setSession({ access_token: r.data.access_token, refresh_token: r.data.refresh_token });
           if (s.error) throw bad;
@@ -36,7 +37,7 @@ export function renderAuth(root, onDone) {
         const name = cleanName(u.value), mail = em.value.trim();
         if (name.length < 3) throw 'Der Benutzername braucht mindestens 3 Zeichen (Buchstaben, Zahlen, _ . -).';
         if (!/^\S+@\S+\.\S+$/.test(mail)) throw 'Bitte eine gültige E-Mail eingeben.';
-        if (p.value.length < 6) throw 'Das Passwort braucht mindestens 6 Zeichen.';
+        if (p.value.length < 8 || !/[a-zA-Z]/.test(p.value) || !/[0-9]/.test(p.value)) throw 'Das Passwort braucht mindestens 8 Zeichen, mit Buchstaben und Zahlen.';
         const t = await rpc('username_taken', { uname: name });
         if (t.data) throw 'Diesen Benutzernamen gibt es schon.';
         const s2 = await sb.auth.signUp({ email: mail, password: p.value, options: { data: { username: name } } });

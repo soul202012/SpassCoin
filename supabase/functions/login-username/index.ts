@@ -21,13 +21,24 @@ Deno.serve(async (req) => {
 
     const url = Deno.env.get('SUPABASE_URL')!;
     const db = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+
+    // Nach 5 Fehlversuchen ist der Name 15 Minuten gesperrt (gilt auch für unbekannte Namen, damit man sie nicht unterscheiden kann)
+    const { data: att } = await db.from('login_attempts').select('fails,locked_until').eq('username', username).maybeSingle();
+    if (att?.locked_until && new Date(att.locked_until) > new Date()) return json({ error: 'locked' }, 429);
+    const fail = async () => {
+      const fails = (att?.fails || 0) + 1, lock = fails >= 5;
+      await db.from('login_attempts').upsert({ username, fails: lock ? 0 : fails, locked_until: lock ? new Date(Date.now() + 15 * 60000).toISOString() : null, updated_at: new Date().toISOString() });
+      return json(lock ? { error: 'locked' } : FAIL, lock ? 429 : 401);
+    };
+
     const { data: p } = await db.from('profiles').select('email').eq('username', username).maybeSingle();
     // Gleiche Antwort wie bei falschem Passwort, damit man nicht herausfinden kann, welche Namen es gibt
-    if (!p?.email) return json(FAIL, 401);
+    if (!p?.email) return await fail();
 
     const anon = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, { auth: { persistSession: false } });
     const { data, error } = await anon.auth.signInWithPassword({ email: p.email, password });
-    if (error || !data.session) return json(FAIL, 401);
+    if (error || !data.session) return await fail();
+    if (att) await db.from('login_attempts').delete().eq('username', username);
     return json({ access_token: data.session.access_token, refresh_token: data.session.refresh_token });
   } catch (_e) {
     return json(FAIL, 500);
